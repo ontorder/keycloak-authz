@@ -1,0 +1,31 @@
+{
+  "name": "keycloak-authz",
+  "version": "0.0.1",
+  "description": "Keycloak Authorization Client API for Javascript applications",
+  "main": "AuthzClient.js",
+  "scripts": {
+    "test": "jasmine --config=jasmine.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nevermind-corp/keycloak-authz.git"
+  },
+  "keywords": [
+    "keycloak",
+    "keycloak-authz",
+    "keycloak-authz-nodejs"
+  ],
+  "author": "Andrey Davydov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nevermind-corp/keycloak-authz/issues"
+  },
+  "homepage": "https://github.com/nevermind-corp/keycloak-authz#readme",
+  "devDependencies": {
+    "jasmine": "^2.8.0"
+  },
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "request": "^2.83.0"
+  }
+}
