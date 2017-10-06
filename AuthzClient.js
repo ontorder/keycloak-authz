@@ -1,9 +1,11 @@
 const GrantManager = require('keycloak-auth-utils').GrantManager,
-      KcConfig = require('keycloak-auth-utils').Config;
+      KcConfig = require('keycloak-auth-utils').Config,
+      ProtectedResource = require('./ProtectedResource');
 
 class AuthzClient {
 
     constructor({url, realm, clientId, credentials = {}, publicClient = false}){
+
         if(!url) throw new Error("Required param is missing: url");
         if(!realm) throw new Error("Required param is missing: realm");
         if(!clientId) throw new Error("Required param is missing: clientId");
@@ -15,6 +17,7 @@ class AuthzClient {
         this._public = publicClient;
         this._grant = null;
         this._grantManager = null;
+        this._protectedResource = new ProtectedResource(this);
     }
 
     isAuthenticated(){
@@ -51,6 +54,26 @@ class AuthzClient {
             return true;
         });
 
+    }
+
+    refreshGrant(){
+        return this._grantManager
+            .ensureFreshness(this._grant)
+            .then((freshGrant) =>{
+                this._grant.update(freshGrant);
+                return true;
+            })
+            .catch(exception =>{
+                console.error("Cannot refresh grant", exception);
+                this._grant = false;
+                return false;
+            });
+    }
+
+
+    resource(){
+        if(!this.isAuthenticated()) throw new Error("Authentication required");
+        return this._protectedResource;
     }
 }
 

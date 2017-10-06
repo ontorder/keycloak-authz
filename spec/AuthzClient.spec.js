@@ -1,8 +1,9 @@
-const AuthzClient = require('../AuthzClient');
+const AuthzClient = require('../AuthzClient'),
+    ProtectedResource = require('../ProtectedResource');
 
 //TODO: make tests without keycloak running
 
-describe("AuthzClient: composition of all required resources", function(){
+describe("AuthzClient composition", function(){
 
     const config = {
         url: 'http://localhost:8080/auth',
@@ -10,17 +11,6 @@ describe("AuthzClient: composition of all required resources", function(){
         realm: 'master',
         credentials: {
             secret: "2ce80357-2204-49e2-8d73-d857a5be185d"
-        }
-    },
-
-    configWithPassword = {
-        url: 'http://localhost:8080/auth',
-        clientId: 'admin-cli',
-        realm: 'master',
-        public: true,
-        credentials: {
-            username: "admin",
-            password: "admin"
         }
     };
 
@@ -50,6 +40,12 @@ describe("AuthzClient: composition of all required resources", function(){
 
     });
 
+    it("Does not allow to manage protected resources without authentication", function(){
+
+        expect(() => client.resource()).toThrowError("Authentication required");
+
+    });
+
 
     it("Retrieves access token with client secret", function(done){
 
@@ -62,24 +58,32 @@ describe("AuthzClient: composition of all required resources", function(){
 
         }).catch(error =>{
             console.error(error);
-            expect(serviceAccountClient.isAuthenticated()).toEqual(true);
+            expect(client.isAuthenticated()).toEqual(true);
             done();
         });
     });
 
-    it("Retrieves access token with password", function(done){
-        let serviceAccountClient = new AuthzClient(configWithPassword);
-        expect(serviceAccountClient.isAuthenticated()).toEqual(false);
 
-        serviceAccountClient.authenticate().then((result) => {
-            expect(result).toEqual(true);
-            expect(serviceAccountClient.isAuthenticated()).toEqual(true);
-            done();
-        }).catch(error =>{
-            console.log("error", error);
-            expect(serviceAccountClient.isAuthenticated()).toEqual(true);
+    it("Allows to manage protected resources with authentication", function(){
+
+        const resource = client.resource();
+
+        expect(resource instanceof ProtectedResource).toEqual(true);
+
+        expect(client.resource()).toEqual(resource);
+
+    });
+
+    it("Allows to ensure freshness of access token", function(done){
+
+
+        client.refreshGrant().then(result => {
+            expect(result).toBeTruthy();
+            expect(client.isAuthenticated()).toEqual(true);
             done();
         });
+
+
     });
 
 });
