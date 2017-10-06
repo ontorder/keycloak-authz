@@ -1,8 +1,10 @@
+const GrantManager = require('keycloak-auth-utils').GrantManager,
+      KcConfig = require('keycloak-auth-utils').Config;
 
 class AuthzClient {
 
-    constructor({url, realm, clientId, credentials = {}}){
-        if(!url) throw new Error("Required param is missing: url!");
+    constructor({url, realm, clientId, credentials = {}, publicClient = false}){
+        if(!url) throw new Error("Required param is missing: url");
         if(!realm) throw new Error("Required param is missing: realm");
         if(!clientId) throw new Error("Required param is missing: clientId");
 
@@ -10,6 +12,45 @@ class AuthzClient {
         this._realm = realm;
         this._clientId = clientId;
         this._credentials = credentials;
+        this._public = publicClient;
+        this._grant = null;
+        this._grantManager = null;
+    }
+
+    isAuthenticated(){
+
+        return !!(this._grant && !this._grant.isExpired());
+
+    }
+
+
+    authenticate(){
+
+        if(this.isAuthenticated()) return Promise.resolve(true);
+
+        const config = new KcConfig({
+            realm: this._realm,
+            clientId: this._clientId,
+            secret: this._credentials.secret,
+            serverUrl: this._kcUrl,
+            public: this._public
+        });
+
+        this._grantManager = new GrantManager(config);
+
+        let promise = Promise.resolve(false);
+
+        if ( this._credentials.password ) {
+            promise = this._grantManager.obtainDirectly( this._credentials.username, this._credentials.password );
+        } else {
+            promise = this._grantManager.obtainFromClientCredentials();
+        }
+
+        return promise.then((grant) =>{
+            this._grant = grant;
+            return true;
+        });
+
     }
 }
 
