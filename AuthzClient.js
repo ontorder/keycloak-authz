@@ -75,6 +75,11 @@ class AuthzClient {
         if(!this.isAuthenticated()) throw new Error("Authentication required");
         return this._protectedResource;
     }
+
+    get grant(){
+        if(!this.isAuthenticated()) throw new Error("Authentication required");
+        return this._grant;
+    }
 }
 
 module.exports = AuthzClient;

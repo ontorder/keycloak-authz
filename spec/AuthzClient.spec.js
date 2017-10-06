@@ -1,18 +1,10 @@
 const AuthzClient = require('../AuthzClient'),
+    config = require('./config'),
     ProtectedResource = require('../ProtectedResource');
 
 //TODO: make tests without keycloak running
 
 describe("AuthzClient composition", function(){
-
-    const config = {
-        url: 'http://localhost:8080/auth',
-        clientId: 'api',
-        realm: 'master',
-        credentials: {
-            secret: "2ce80357-2204-49e2-8d73-d857a5be185d"
-        }
-    };
 
 
     let client = null, originalTimeout  = null;
@@ -39,6 +31,13 @@ describe("AuthzClient composition", function(){
         expect(() => new AuthzClient({url: "test", clientId: "test", realm: "master"})).not.toThrowError(Error);
 
     });
+
+    it("Does not allow to get current grant without auth", function(){
+
+        expect(() => client.grant).toThrowError("Authentication required");
+
+    });
+
 
     it("Does not allow to manage protected resources without authentication", function(){
 
@@ -83,6 +82,13 @@ describe("AuthzClient composition", function(){
             done();
         });
 
+
+    });
+
+
+    it("Allows to get current grant", function(){
+
+        expect(client.grant).toBeTruthy();
 
     });
 

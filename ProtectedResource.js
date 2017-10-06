@@ -1,8 +1,8 @@
 class ProtectedResource {
 
-    constructor(client){
+    constructor(authzClient){
 
-        this._client = client;
+        this._client = authzClient;
 
     }
 
