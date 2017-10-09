@@ -1,6 +1,7 @@
 const GrantManager = require('keycloak-auth-utils').GrantManager,
       KcConfig = require('keycloak-auth-utils').Config,
-      ProtectedResource = require('./ProtectedResource');
+      ProtectedResource = require('./ProtectedResource'),
+      EntitlementResource = require('./EntitlementResource');
 
 class AuthzClient {
 
@@ -18,6 +19,7 @@ class AuthzClient {
         this._grant = null;
         this._grantManager = null;
         this._protectedResource = new ProtectedResource(this);
+        this._entitlementResource = new EntitlementResource(this);
     }
 
     isAuthenticated(){
@@ -79,6 +81,11 @@ class AuthzClient {
     resource(){
         if(!this.isAuthenticated()) throw new Error("Authentication required");
         return this._protectedResource;
+    }
+
+    entitlement(){
+        if(!this.isAuthenticated()) throw new Error("Authentication required");
+        return this._entitlementResource;
     }
 
     get grant(){

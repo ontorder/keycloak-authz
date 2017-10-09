@@ -82,6 +82,19 @@ client.authenticate().then(()=>{
     client.resource().findAll(true).then(resources =>{
         console.info("All resources with info", resources);
     });
+    
+    
+    /* Retrieve Repuesting Party Token for user */
+   
+    client.entitlement().getAll(user_access_token).then(response =>{
+        console.info("Requesting party token is: ", response.rpt);
+        
+        /* Introspect RPT */
+        return client.entitlement().introspectRequestingPartyToken(response.rpt)
+        
+    }).then(permissions =>{
+        console.info("RPT data: ", permissions);
+    })
 });
 
 
