@@ -1,18 +1,24 @@
-const UMAResource = require('./UMAResource');
+const UMAResource = require('./UMAResource'),
+      HttpUtils = require('./HttpUtils');
 
-class ProtectedResource {
+class ProtectedResource extends HttpUtils {
 
     constructor(authzClient){
 
+        super(authzClient);
         this._client = authzClient;
 
     }
 
 
-
     create(resource){
         if(!resource || !(resource.name)) throw new Error("Resource is required");
-        return true;
+        return this.post('/authz/protection/resource_set', resource.serialize())
+            .then(response =>{
+                resource.setId(response['_id']);
+                return resource;
+            });
+
     }
 
 

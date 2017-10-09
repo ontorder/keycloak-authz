@@ -3,7 +3,7 @@ const UMAScope = require("./UMAScope");
 class UMAResource {
 
 
-    constructor({name, id = null, uri = null, type = null, iconUri = null, owner = null, scopes = [] }){
+    constructor({name, _id = null, uri = null, type = null, icon_uri = null, owner = null, scopes = [] }){
 
         if(!name) throw new Error("ResourceSetName is required");
 
@@ -11,9 +11,9 @@ class UMAResource {
         this._uri = uri;
         this._type = type;
         this._scopes = [];
-        this._iconUri = iconUri;
+        this._iconUri = icon_uri;
         this._owner = owner;
-        this._id = id;
+        this._id = _id;
 
         this.setScopes(scopes)
     }
@@ -118,10 +118,10 @@ class UMAResource {
             name: this.name,
             uri: this.uri,
             type: this.type,
-            iconUri: this.iconUri,
+            icon_uri: this.iconUri,
             owner: this.owner,
             scopes: this.scopes,
-            id: this.id
+            _id: this.id
         };
     }
 

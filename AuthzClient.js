@@ -84,6 +84,10 @@ class AuthzClient {
     get url(){
         return this._kcUrl;
     }
+
+    get realm(){
+       return this._realm;
+    }
 }
 
 module.exports = AuthzClient;
