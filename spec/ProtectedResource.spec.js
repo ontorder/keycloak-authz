@@ -81,4 +81,43 @@ describe("UMA resource REST client", function(){
 
     });
 
+    it("Allows to find UMA resources by filter", function(done){
+        expect(()=> resource.findByFilter()).toThrowError("Filter is required");
+
+        resource.findByFilter(`name=${createdResource.name}`).then((response) =>{
+            expect(response).toBeTruthy();
+            expect(response.hasOwnProperty('length')).toEqual(true);
+            expect(response[0].equal(createdResource)).toEqual(true);
+            done();
+        }).catch(error =>{
+            expect(error).toBeFalsy();
+            done();
+        });
+
+    });
+
+
+    it("Allows to find all UMA resources", function(done){
+
+        resource.findAll().then((response) =>{
+            expect(response).toBeTruthy();
+            expect(response.hasOwnProperty('length')).toEqual(true);
+            done();
+        }).catch(error =>{
+            expect(error).toBeFalsy();
+            done();
+        });
+
+    });
+
+
+    it("Allows to delete resource by id", function(done){
+
+        resource.deleteById(createdResource.id).then(response =>{
+            expect(response).toBeTruthy();
+        }).catch(() =>{
+            done();
+        });
+    });
+
 });

@@ -52,6 +52,7 @@ client.authenticate().then(()=>{
     client.resource().update(resource).then(updated =>{  
         console.log("Resource is updated", updated);
         console.info(resource.equal(updated)) // true
+        console.info(resource.hasScope("app:events:participate")) // true
     });
     
     
@@ -61,6 +62,26 @@ client.authenticate().then(()=>{
         console.info(result.equal(resource)) // true
     });
     
+    
+    /* Find resources by filter */
+    client.resource().findByFilter("type=albumz").then(resources =>{
+        console.info(`Found ${resources.length} resources with filter: type=albumz`);
+    });
+    
+    /* Delete resource by id */
+    client.resource().deleteById("someId").then(response =>{
+        console.info(`Resource with id SomeId is deleted`, response);
+    });
+    
+    /* find all resource ids */
+    client.resource().findAll(false).then(resources =>{
+        console.info(resources.length);
+    });
+    
+    /* Fetch all resources with their descriptions */
+    client.resource().findAll(true).then(resources =>{
+        console.info("All resources with info", resources);
+    });
 });
 
 

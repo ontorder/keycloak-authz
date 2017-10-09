@@ -33,24 +33,29 @@ class ProtectedResource extends HttpResource {
     findById(id){
         if(!id) throw new Error("Id is required");
         return this.get(`/authz/protection/resource_set/${id}`).then(response =>{
+            if(!response) return false;
             return new UMAResource(response);
-        });
+        }).catch(() => false);
     }
 
     findByFilter(filter){
-
-        return true;
+        if(!filter) throw new Error("Filter is required");
+        return this.get(`/authz/protection/resource_set`, {filter}).then(response =>{
+            return Promise.all(response.map(id => this.findById(id)))
+        });
     }
 
-    findAll(){
+    findAll( deep = false ){
 
-        return true;
+        return this.get(`/authz/protection/resource_set`).then(response =>{
+            if(!deep) return response;
+            return Promise.all(response.map(id => this.findById(id)))
+        });
     }
 
-    delete(id){
-
-        return true;
-
+    deleteById(id){
+        if(!id) throw new Error("Id is required");
+        return this.delete("/authz/protection/resource_set/" + id);
     }
 
 }

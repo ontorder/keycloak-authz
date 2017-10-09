@@ -64,10 +64,28 @@ class HttpResource {
         return this._client.refreshGrant().then(()=>{
             return request(options);
         }).catch(response =>{
-            console.error("Error happened during request", response.error.errorMessage);
+            console.error("Error happened during request", response.error);
             throw new Error(response.error.errorMessage);
         });
 
+    }
+
+    delete(uri){
+        let options = {
+            method: 'DELETE',
+            uri: this._prepareUri(uri),
+            headers: {
+                "Authorization": `Bearer ${this._client.grant.access_token.token}`
+            },
+            json: true
+        };
+
+        return this._client.refreshGrant().then(()=>{
+            return request(options);
+        }).catch(response =>{
+            console.error("Error happened during request", response.error);
+            throw new Error(response.error.errorMessage);
+        });
     }
 }
 
