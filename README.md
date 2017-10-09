@@ -16,7 +16,7 @@ const { UMAResource, AuthzClient } = require('keycloak-authz');
 
 
 let client = new AuthzClient({
-  url: 'localhost:8080/auth',
+  url: 'localhost:8080',
   realm: 'master',
   clientId: 'myAwesomeApiService',
   credentials: {

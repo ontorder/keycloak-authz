@@ -2,7 +2,7 @@
   "name": "keycloak-authz",
   "version": "0.0.1",
   "description": "Keycloak Authorization Client API for Javascript applications",
-  "main": "AuthzClient.js",
+  "main": "index.js",
   "scripts": {
     "test": "jasmine --config=jasmine.json"
   },
@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "dotenv": "4.0.0",
-    "keycloak-auth-utils": "^3.3.0-cr.2",
+    "keycloak-auth-utils": "3.3.0-cr.2",
     "request": "2.83.0",
     "request-promise-native": "1.0.5"
   }

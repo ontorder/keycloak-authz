@@ -35,7 +35,7 @@ class AuthzClient {
             realm: this._realm,
             clientId: this._clientId,
             secret: this._credentials.secret,
-            serverUrl: this._kcUrl,
+            serverUrl: this._kcUrl + "/auth",
             public: this._public
         });
 
