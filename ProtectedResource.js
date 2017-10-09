@@ -1,3 +1,5 @@
+const UMAResource = require('./UMAResource');
+
 class ProtectedResource {
 
     constructor(authzClient){
@@ -9,7 +11,7 @@ class ProtectedResource {
 
 
     create(resource){
-
+        if(!resource || !(resource.name)) throw new Error("Resource is required");
         return true;
     }
 

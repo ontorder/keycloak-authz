@@ -22,9 +22,10 @@ describe("UMA resource REST client", function(){
 
 
     it("Allows to create UMA resources", function(done){
-        resource.create({}).then(resource =>{
-            done();
-        })
+        expect(()=> resource.create({})).toThrowError("Resource is required");
+
+        done();
+
     });
 
 });

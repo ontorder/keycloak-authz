@@ -1,17 +1,21 @@
+const UMAScope = require("./UMAScope");
+
 class UMAResource {
 
 
-    constructor({ name, uri = null, type = null, iconUri = null, owner = null, scopes = [] }){
+    constructor({name, id = null, uri = null, type = null, iconUri = null, owner = null, scopes = [] }){
 
         if(!name) throw new Error("ResourceSetName is required");
 
         this._name = name;
         this._uri = uri;
         this._type = type;
-        this._scopes = scopes;
+        this._scopes = [];
         this._iconUri = iconUri;
         this._owner = owner;
-        this._id = null;
+        this._id = id;
+
+        this.setScopes(scopes)
     }
 
 
@@ -51,16 +55,31 @@ class UMAResource {
     }
 
     setScopes(newScopes){
+
         newScopes  = newScopes || [];
-        this._scopes = newScopes;
+
+        this._scopes = [];
+
+        newScopes.forEach(scope =>{
+            if(typeof scope === "string") this._scopes.push(new UMAScope({name: scope}));
+            if(typeof scope === "object") this._scopes.push(new UMAScope(scope));
+        });
+
         return this;
 
     }
 
     addScope(scopeName){
       if(!scopeName) throw new Error("Scope name is required");
-      if(!this._scopes.includes(scopeName)) this._scopes.push(scopeName);
+      if(!this.hasScope(scopeName))
+        this._scopes.push(new UMAScope({name: scopeName}));
       return this;
+    }
+
+    hasScope(scopeName){
+        return !!this.scopes.filter(scope =>{
+            return scope.name === scopeName;
+        });
     }
 
     get owner(){
@@ -91,6 +110,27 @@ class UMAResource {
         if(!newUri) throw new Error("IconUri is required");
         this._iconUri = newUri;
         return this;
+    }
+
+
+    serialize(){
+        return {
+            name: this.name,
+            uri: this.uri,
+            type: this.type,
+            iconUri: this.iconUri,
+            owner: this.owner,
+            scopes: this.scopes,
+            id: this.id
+        };
+    }
+
+
+    equal(object){
+       return (object.name === this.name && object.id === this.id &&
+               object.iconUri === this.iconUri &&
+               object.owner === this.owner &&
+               object.uri === this.uri && object.type === this.type);
     }
 
 }

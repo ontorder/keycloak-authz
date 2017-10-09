@@ -92,4 +92,10 @@ describe("AuthzClient composition", function(){
 
     });
 
+    it("Allows to get keycloak url", function(){
+
+        expect(client.url).toEqual(config.url);
+
+    });
+
 });

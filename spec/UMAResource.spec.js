@@ -81,11 +81,13 @@ describe("UMA Resource representation", function(){
 
         resource.setScopes(scopes);
 
-        expect(resource.scopes).toEqual(scopes);
+        scopes.forEach((name) =>{
+            expect(resource.hasScope(name)).toEqual(true);
+        });
 
         resource.addScope("delete");
 
-        expect(resource.scopes.includes("delete")).toEqual(true);
+        expect(resource.hasScope("delete")).toEqual(true);
 
         resource.setScopes(null);
 
@@ -143,5 +145,16 @@ describe("UMA Resource representation", function(){
 
     });
 
+    it("Can be serialized", function(){
+
+        let obj = resource.serialize();
+
+        expect(typeof obj).toEqual("object");
+
+        let newResource = new UMAResource(obj);
+
+        expect(resource.equal(newResource)).toEqual(true);
+
+    });
 
 });

@@ -1,8 +1,8 @@
 module.exports ={
-    url: 'http://localhost:8080/auth',
+    url: 'http://localhost:8080',
     clientId: 'api',
-    realm: 'master',
+    realm: 'test',
     credentials: {
-        secret: "2ce80357-2204-49e2-8d73-d857a5be185d"
+        secret: "b6ac002a-ee0b-4e16-9961-201d31221af5"
     }
 };

@@ -1,5 +1,7 @@
 module.exports = {
     AuthzClient: require('./AuthzClient'),
     UMAResource: require("./UMAResource"),
-    ProtectedResource: require('./ProtectedResource')
+    UMAScope: require("./UMAScope"),
+    ProtectedResource: require('./ProtectedResource'),
+
 };
