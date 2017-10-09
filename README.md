@@ -27,15 +27,19 @@ let client = new AuthzClient({
 
 // Create protected resource
 client.authenticate().then(()=>{
+    
     let resource = new UMAResource("myAwesomeProtectedResource");
         resource.setOwner("userId");
         resource.addScope("api:create");
         resource.addScope("api:delete");
         resource.setIcon("https://img.com/resource.png"); 
         
-    client.resource().create(resource).then(createdResource =>{
-       console.log("Resource created: ", createdResource);   
-    });
+    return client.resource().create(resource);
+    
+}).then((createdResource)=>{
+    
+   console.log("Resource created: ", createdResource); 
+   
 });
 ```
 
