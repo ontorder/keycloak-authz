@@ -83,6 +83,16 @@ class UMAResource {
         return this;
     }
 
+    get iconUri(){
+        return this._iconUri;
+    }
+
+    setIconUri(newUri){
+        if(!newUri) throw new Error("IconUri is required");
+        this._iconUri = newUri;
+        return this;
+    }
+
 }
 
 module.exports = UMAResource;

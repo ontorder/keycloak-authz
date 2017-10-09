@@ -29,10 +29,13 @@ let client = new AuthzClient({
 client.authenticate().then(()=>{
     
     let resource = new UMAResource("myAwesomeProtectedResource");
-        resource.setOwner("userId");
-        resource.addScope("api:create");
-        resource.addScope("api:delete");
-        resource.setIcon("https://img.com/resource.png"); 
+        .setOwner("userId")
+        .addScope("api:create")
+        .addScope("api:delete")
+        .setIconUri("https://img.com/resource.png")
+        .setType("photoz")
+        .setUri("/photoz/item/133");
+        
         
     return client.resource().create(resource);
     

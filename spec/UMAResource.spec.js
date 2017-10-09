@@ -45,6 +45,19 @@ describe("UMA Resource representation", function(){
 
     });
 
+    it("Allows to read/write iconUri", function(){
+        let  uri = "https://img.com/example.png";
+
+        expect(resource.iconUri).toEqual(null);
+
+        resource.setIconUri(uri);
+
+        expect(resource.iconUri).toEqual(uri);
+
+        expect(()=> resource.setIconUri(null)).toThrowError("IconUri is required");
+
+    });
+
     it("Allows to read/write type", function(){
 
         let  type = "photoItem";
@@ -125,6 +138,8 @@ describe("UMA Resource representation", function(){
         expect(resource.setOwner("owner")).toEqual(resource);
 
         expect(resource.setId("id")).toEqual(resource);
+
+        expect(resource.setIconUri("example")).toEqual(resource);
 
     });
 
