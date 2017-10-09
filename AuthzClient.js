@@ -70,6 +70,11 @@ class AuthzClient {
             });
     }
 
+    userInfo(token = this._grant.access_token.token ){
+        return this._grantManager
+            .userInfo(token)
+    }
+
 
     resource(){
         if(!this.isAuthenticated()) throw new Error("Authentication required");

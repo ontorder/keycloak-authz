@@ -131,7 +131,6 @@ class UMAResource {
     equal(object){
        return (object.name === this.name && object.id === this.id &&
                object.iconUri === this.iconUri &&
-               object.owner === this.owner &&
                object.uri === this.uri && object.type === this.type);
     }
 

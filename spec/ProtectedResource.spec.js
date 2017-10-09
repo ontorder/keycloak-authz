@@ -5,7 +5,7 @@ const AuthzClient = require('../AuthzClient'),
 
 describe("UMA resource REST client", function(){
 
-    let resource = null, originalTimeout  = null;
+    let resource = null, originalTimeout  = null, createdResource = null;
 
     beforeAll((done) =>{
 
@@ -35,10 +35,44 @@ describe("UMA resource REST client", function(){
             .addScope("api:event:delete")
             .addScope("api:event:manage");
 
+        createdResource = res;
+
         resource.create(res).then((response) =>{
             expect(response).toBeTruthy();
             expect(response).toEqual(res);
             expect(res.id).toBeTruthy();
+            done();
+        }).catch(error =>{
+            expect(error).toBeFalsy();
+            done();
+        });
+
+    });
+
+
+    it("Allows to update UMA resources", function(done){
+        expect(()=> resource.update({})).toThrowError("Resource is required");
+
+        createdResource.setName("Name updated " + Math.random());
+
+        resource.update(createdResource).then((response) =>{
+            expect(response).toBeTruthy();
+            expect(response).toEqual(createdResource);
+            done();
+        }).catch(error =>{
+            expect(error).toBeFalsy();
+            done();
+        });
+
+    });
+
+
+    it("Allows to find UMA resource by ID", function(done){
+        expect(()=> resource.findById()).toThrowError("Id is required");
+
+        resource.findById(createdResource.id).then((response) =>{
+            expect(response).toBeTruthy();
+            expect(createdResource.equal(response)).toEqual(true);
             done();
         }).catch(error =>{
             expect(error).toBeFalsy();

@@ -1,9 +1,9 @@
 class UMAScope {
 
-    constructor({name, _id = null, icon_uri = null}){
+    constructor({name, id = null, icon_uri = null}){
 
         this.name = name;
-        this._id = _id;
+        this.id = id;
         this.icon_uri = icon_uri;
 
 
@@ -18,7 +18,7 @@ class UMAScope {
         let obj = {
             name: this.name
         };
-        if(this._id) obj._id  = this._id;
+        if(this.id) obj.id  = this.id;
         if(this.icon_uri) obj.icon_uri = this.icon_uri;
         return obj;
     }
