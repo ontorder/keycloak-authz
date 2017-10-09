@@ -90,6 +90,10 @@ class AuthzClient {
         return this._kcUrl;
     }
 
+    get clientId(){
+        return this._clientId;
+    }
+
     get realm(){
        return this._realm;
     }

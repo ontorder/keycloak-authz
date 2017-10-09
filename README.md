@@ -70,7 +70,7 @@ client.authenticate().then(()=>{
     
     /* Delete resource by id */
     client.resource().deleteById("someId").then(response =>{
-        console.info(`Resource with id SomeId is deleted`, response);
+        console.info(`Resource with id SomeId was deleted`, response);
     });
     
     /* find all resource ids */
