@@ -77,9 +77,9 @@ class UMAResource {
     }
 
     hasScope(scopeName){
-        return !!this.scopes.filter(scope =>{
+        return !!(this._scopes.filter(scope =>{
             return scope.name === scopeName;
-        });
+        }).length);
     }
 
     get owner(){
@@ -114,15 +114,17 @@ class UMAResource {
 
 
     serialize(){
-        return {
-            name: this.name,
-            uri: this.uri,
-            type: this.type,
-            icon_uri: this.iconUri,
-            owner: this.owner,
-            scopes: this.scopes,
-            _id: this.id
+        let object = {
+            name: this.name
         };
+
+        if(this.uri) object.uri = this.uri;
+        if(this.type) object.type = this.type;
+        if(this.iconUri) object.icon_uri = this.iconUri;
+        if(this.scopes) object.scopes = this._scopes.map(scope=>scope.serialize());
+        if(this.owner) object.owner = this.owner;
+        if(this.id) object._id = this.id;
+        return object;
     }
 
 

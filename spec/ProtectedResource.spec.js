@@ -27,17 +27,21 @@ describe("UMA resource REST client", function(){
     it("Allows to create UMA resources", function(done){
         expect(()=> resource.create({})).toThrowError("Resource is required");
 
-        let res = new UMAResource({name: "MyAwesomeResource 33"});
-        res.setUri('/events/item/33')
-            .setIconUri("http://example.com")
+        let res = new UMAResource({name: "Test " + Math.random()});
+        res.setUri('/test/item/33ss')
+            .setIconUri("http://example.com/img.png")
             .setType("event")
-            .addScope("urn:api:create");
+            .addScope("api:event:create")
+            .addScope("api:event:delete")
+            .addScope("api:event:manage");
 
         resource.create(res).then((response) =>{
-            expect(response).toBeTruthy()
+            expect(response).toBeTruthy();
+            expect(response).toEqual(res);
+            expect(res.id).toBeTruthy();
             done();
         }).catch(error =>{
-            expect(error).toBeFalsy()
+            expect(error).toBeFalsy();
             done();
         });
 

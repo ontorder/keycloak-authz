@@ -1,10 +1,10 @@
 class UMAScope {
 
-    constructor({name, id = null, iconUri = null}){
+    constructor({name, _id = null, icon_uri = null}){
 
         this.name = name;
-        this.id = id;
-        this.iconUri = iconUri;
+        this._id = _id;
+        this.icon_uri = icon_uri;
 
 
     }
@@ -12,6 +12,15 @@ class UMAScope {
 
     equal(object){
         return this.name === object.name;
+    }
+
+    serialize(){
+        let obj = {
+            name: this.name
+        };
+        if(this._id) obj._id  = this._id;
+        if(this.icon_uri) obj.icon_uri = this.icon_uri;
+        return obj;
     }
 }
 
