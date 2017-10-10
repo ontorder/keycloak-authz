@@ -146,7 +146,6 @@ describe("Keycloak Script based Policy representation", function(){
 
 });
 
-
 describe("Keycloak Group based Policy representation", function(){
     let resource = null;
 

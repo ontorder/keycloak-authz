@@ -11,7 +11,7 @@ npm install nevermind-corp/keycloak-authz --save
 
 ```javascript
 
-const { UMAResource, AuthzClient } = require('keycloak-authz');
+const { UMAResource, AuthzClient, KeycloakUserPolicy, KeycloakGroupPolicy } = require('keycloak-authz');
 
 
 
@@ -27,7 +27,7 @@ let client = new AuthzClient({
 
 client.authenticate().then(()=>{
     
-    /* Create protected resource  */
+    /** Create protected resource  **/
     let resource = new UMAResource("myAwesomeProtectedResource");
         .setOwner("userId")
         .addScope("api:create")
@@ -42,7 +42,7 @@ client.authenticate().then(()=>{
     });
     
     
-    /* Update protected resource */
+    /** Update protected resource **/
     resource
         .setName("New Name")
         .addScope("app:events:participate")
@@ -56,60 +56,77 @@ client.authenticate().then(()=>{
     });
     
     
-    /* Find Resource by Id */
+    /** Find Resource by Id **/
     client.resource().findById(resource.id).then(result =>{
         console.info("Search result is:" ,result);
         console.info(result.equal(resource)) // true
     });
     
     
-    /* Find resources by filter */
+    /** Find resources by filter **/
     client.resource().findByFilter("type=albumz").then(resources =>{
         console.info(`Found ${resources.length} resources with filter: type=albumz`);
     });
     
-    /* Delete resource by id */
+    /** Delete resource by id **/
     client.resource().deleteById("someId").then(response =>{
         console.info(`Resource with id SomeId was deleted`, response);
     });
     
-    /* Find all resource ids */
+    /** Find all resource ids **/
     client.resource().findAll(false).then(resources =>{
         console.info(resources.length);
     });
     
-    /* Fetch all resources with their descriptions */
+    /** Fetch all resources with their descriptions **/
     client.resource().findAll(true).then(resources =>{
         console.info("All resources with info", resources);
     });
     
     
-    /* Retrieve Repuesting Party Token for user */
-   
+    /** Retrieve Repuesting Party Token for user **/
     client.entitlement().getAll(user_access_token).then(response =>{
         console.info("Requesting party token is: ", response);
     });
     
     
-    /* Introspect RPT */
+    /** Introspect RPT **/
     client.entitlement().introspectRequestingPartyToken(requestingPartyToken).then(validToken =>{
         console.info("RPT data: ", validToken.content);
     });
     
     
-    /* Validate any type of access token without introspection (offline) */
-    
+    /** Validate any type of access token without introspection (offline) **/
     client.entitlement().validateToken(any_token).then(validToken =>{
-        
-        console.info("User token is valid", validToken.content);
-        
-    }).catch(error =>{
-        
-        console.error("User token is expired or invalid");
-        
-    })
+        console.info("User token is valid", validToken.content);  
+    }).catch(error =>{ 
+        console.error("User token is expired or invalid");  
+    });
+    
+    
+    /** Create User Based policy **/
+    const userBasedPolicy = new KeycloakUserPolicy({name: "The participants of meeting #33" });
+    
+    userBasedPolicy.setDescription("Allows to access only for registered participants")
+                   .setLogic(KeycloakUserPolicy.logic.POSITIVE)
+                   .addUser("participantId")
+                   .addUser("otherUserId");
+    
+    client.admin().policy().create(userBasedPolicy).then(policy =>{
+        console.info("Policy has been created", policy.id);
+    });
+    
+    /** Create group based policy **/
+    const groupBasedPolicy = new KeycloakGroupPolicy({name: "The user group"});
+          groupBasedPolicy.setDescription("Deny access for user group")
+                          .setGroups(["groupId"])
+                          .setLogic(KeycloakGroupPolicy.logic.NEGATIVE);
+         
+   client.admin().policy().create(groupBasedPolicy).then(policy =>{
+      console.info("Policy has been created", policy.id);
+   });  
+   
 });
-
 
 
 ```
