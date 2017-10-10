@@ -4,5 +4,9 @@ module.exports = {
     UMAScope: require("./UMAScope"),
     ProtectedResource: require('./ProtectedResource'),
     EntitlementResource: require('./EntitlementResource'),
-    AdminResource: require('./AdminResource')
+    AdminResource: require('./AdminResource'),
+    KeycloakPolicy: require('./KeycloakPolicy'),
+    KeycloakUserPolicy: require('./KeycloakUserPolicy'),
+    KeycloakGroupPolicy: require('./KeycloakGroupPolicy'),
+    KeycloakScriptPolicy: require('./KeycloakScriptPolicy')
 };

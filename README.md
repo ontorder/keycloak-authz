@@ -88,20 +88,20 @@ client.authenticate().then(()=>{
    
     client.entitlement().getAll(user_access_token).then(response =>{
         console.info("Requesting party token is: ", response);
-        
-        /* Introspect RPT */
-        return client.entitlement().introspectRequestingPartyToken(response.token)
-        
-    }).then(permissions =>{
-        console.info("RPT data: ", permissions);
-    })
+    });
     
     
-    /* Validate access token without introspection (offline) */
+    /* Introspect RPT */
+    client.entitlement().introspectRequestingPartyToken(requestingPartyToken).then(validToken =>{
+        console.info("RPT data: ", validToken.content);
+    });
     
-    client.entitlement().validateToken(user_access_token).then(validToken =>{
+    
+    /* Validate any type of access token without introspection (offline) */
+    
+    client.entitlement().validateToken(any_token).then(validToken =>{
         
-        console.info("User tokenis valid", validToken.content);
+        console.info("User token is valid", validToken.content);
         
     }).catch(error =>{
         

@@ -131,4 +131,19 @@ describe("AuthzClient composition", function(){
 
     });
 
+
+    it("Retrieves client info async", function(done){
+        client.getClientInfo().then(info =>{
+            expect(info.id).toBeTruthy();
+            done();
+        }).catch(exception =>{
+            expect(exception).toBeFalsy();
+            done();
+        })
+    });
+
+    it("Allows to access to client info", function(){
+        expect(client.clientInfo).toBeTruthy();
+    });
+
 });
