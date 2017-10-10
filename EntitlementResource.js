@@ -1,4 +1,5 @@
 const request = require('request-promise-native'),
+      Token = require('./Token'),
       HttpResource = require('./HttpResource');
 
 class EntitlementResource extends HttpResource {
@@ -15,19 +16,17 @@ class EntitlementResource extends HttpResource {
      * @param uri
      */
     get(uri, access_token){
-        let options = {
-            method: 'GET',
-            uri: this._prepareUri(uri),
-            headers: {
-                "Authorization": `Bearer ${access_token}`
-            },
-            json: true
-        };
-
         return this._client.refreshGrant().then(()=>{
+            let options = {
+                method: 'GET',
+                uri: this._prepareUri(uri),
+                headers: {
+                    "Authorization": `Bearer ${access_token}`
+                },
+                json: true
+            };
             return request(options);
         }).catch(response =>{
-            console.error("Error happened during request", response);
             throw new Error(response.error.errorMessage);
         });
     }
@@ -36,28 +35,36 @@ class EntitlementResource extends HttpResource {
 
 
     getAll(access_token){
-        return this.get("/authz/entitlement/" + this._client.clientId, access_token)
+        return this.get("/authz/entitlement/" + this._client.clientId, access_token).then((response) =>{
+            let token = new Token(response.rpt, this._client.clientId);
+            return token;
+        })
+    }
+
+    validateToken(token){
+        if(typeof token === "string"){
+            token = new Token(token, this._client.clientId);
+        }
+        return this._client.grantManager.validateToken(token);
     }
 
     introspectRequestingPartyToken(rpt){
-        let options = {
-            method: 'POST',
-            uri: `${this._client.url}/auth/realms/test/protocol/openid-connect/token/introspect`,
-            headers: {
-             "Authorization": 'Basic ' + new Buffer(this._client.clientId + ':' + this._client._credentials.secret).toString('base64'),
-             'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            form: {
-               "token_type_hint": "requesting_party_token",
-                "token": rpt
-            },
-            json: true
-        };
-
         return this._client.refreshGrant().then(()=>{
+            let options = {
+                method: 'POST',
+                uri: `${this._client.url}/auth/realms/test/protocol/openid-connect/token/introspect`,
+                headers: {
+                    "Authorization": 'Basic ' + new Buffer(this._client.clientId + ':' + this._client.credentials.secret).toString('base64'),
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                form: {
+                    "token_type_hint": "requesting_party_token",
+                    "token": rpt
+                },
+                json: true
+            };
             return request(options);
         }).catch(response =>{
-            console.error("Error happened during request", response);
             throw new Error(response.error);
         });
     }

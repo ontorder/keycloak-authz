@@ -12,7 +12,7 @@ describe("Entitlement api  REST client", function(){
         client.authenticate().then(()=>{
             resource = new EntitlementResource(client);
             originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-            jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000000;
+            jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
             done();
         });
@@ -25,18 +25,29 @@ describe("Entitlement api  REST client", function(){
 
     it("Allows to fetch  Requesting Party Token ", function(done){
         resource.getAll(client.grant.access_token.token).then(response =>{
-            expect(response.rpt).toBeTruthy();
-            rpt = response.rpt;
+            expect(response.token).toBeTruthy();
+            rpt = response;
             done();
         })
     });
 
     it("Allows to introspect  Requesting Party Token ", function(done){
-        resource.introspectRequestingPartyToken(rpt).then(response =>{
-            console.info(response);
+        resource.introspectRequestingPartyToken(rpt.token).then(response =>{
+            expect(response).toBeTruthy();
             done();
         }).catch(error => {
             console.error(error);
+            done();
+        })
+    });
+
+
+    it("Allows to validate token without introspection ", function(done){
+        resource.validateToken(rpt).then((response) =>{
+            expect(response.isExpired()).toEqual(false);
+            done();
+        }).catch(error =>{
+            expect(error).toBeFalsy();
             done();
         })
     });

@@ -73,6 +73,15 @@ describe("AuthzClient composition", function(){
 
     });
 
+    it("Allows to manage entitlement resources with authentication", function(){
+
+        const resource = client.entitlement();
+
+
+        expect(client.entitlement()).toEqual(resource);
+
+    });
+
     it("Allows to ensure freshness of access token", function(done){
 
 
@@ -89,6 +98,20 @@ describe("AuthzClient composition", function(){
     it("Allows to get current grant", function(){
 
         expect(client.grant).toBeTruthy();
+
+    });
+
+    it("Allows to get grant manager", function(){
+
+        expect(client.grantManager).toBeTruthy();
+
+    });
+
+    it("Allows to get clientId && credentials", function(){
+
+        expect(client.clientId).toBeTruthy();
+
+        expect(client.credentials).toBeTruthy();
 
     });
 

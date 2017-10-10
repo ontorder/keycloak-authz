@@ -15,75 +15,69 @@ class HttpResource {
     }
 
     post(uri, body){
-        let options = {
-            method: 'POST',
-            uri: this._prepareUri(uri),
-            headers: {
-                "Authorization": `Bearer ${this._client.grant.access_token.token}`
-            },
-            body: body,
-            json: true
-        };
         return this._client.refreshGrant().then(()=>{
+            let options = {
+                method: 'POST',
+                uri: this._prepareUri(uri),
+                headers: {
+                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
+                },
+                body: body,
+                json: true
+            };
             return request(options);
         }).catch(response =>{
-            console.error("Error happened during request", response.error.errorMessage);
-            throw new Error(response.error.errorMessage);
+            throw new Error(response.error);
         });
     }
 
     put(uri, body){
-        let options = {
-            method: 'PUT',
-            uri: this._prepareUri(uri),
-            headers: {
-                "Authorization": `Bearer ${this._client.grant.access_token.token}`
-            },
-            body: body,
-            json: true
-        };
         return this._client.refreshGrant().then(()=>{
+            let options = {
+                method: 'PUT',
+                uri: this._prepareUri(uri),
+                headers: {
+                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
+                },
+                body: body,
+                json: true
+            };
             return request(options);
         }).catch(response =>{
-            console.error("Error happened during request", response.error);
-            throw new Error(response.error.errorMessage);
+            throw new Error(response.error);
         });
     }
 
     get(uri, queryParams = {}){
-        let options = {
-            method: 'GET',
-            uri: this._prepareUri(uri),
-            headers: {
-                "Authorization": `Bearer ${this._client.grant.access_token.token}`
-            },
-            qs: queryParams,
-            json: true
-        };
-
         return this._client.refreshGrant().then(()=>{
+            let options = {
+                method: 'GET',
+                uri: this._prepareUri(uri),
+                headers: {
+                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
+                },
+                qs: queryParams,
+                json: true
+            };
             return request(options);
         }).catch(response =>{
-            console.error("Error happened during request", response.error);
             throw new Error(response.error.errorMessage);
         });
 
     }
 
     delete(uri){
-        let options = {
-            method: 'DELETE',
-            uri: this._prepareUri(uri),
-            headers: {
-                "Authorization": `Bearer ${this._client.grant.access_token.token}`
-            },
-            json: true
-        };
-
         return this._client.refreshGrant().then(()=>{
+            let options = {
+                method: 'DELETE',
+                uri: this._prepareUri(uri),
+                headers: {
+                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
+                },
+                json: true
+            };
             return request(options);
         }).catch(response =>{
-            console.error("Error happened during request", response.error);
             throw new Error(response.error.errorMessage);
         });
     }

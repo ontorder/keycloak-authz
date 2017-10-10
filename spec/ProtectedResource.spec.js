@@ -13,7 +13,7 @@ describe("UMA resource REST client", function(){
         client.authenticate().then(()=>{
             resource = new ProtectedResource(client);
             originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-            jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000000;
+            jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 
             done();
         });
@@ -113,8 +113,8 @@ describe("UMA resource REST client", function(){
 
     it("Allows to delete resource by id", function(done){
 
-        resource.deleteById(createdResource.id).then(response =>{
-            expect(response).toBeTruthy();
+        resource.deleteById(createdResource.id).then(() =>{
+            done();
         }).catch(() =>{
             done();
         });

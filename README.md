@@ -73,7 +73,7 @@ client.authenticate().then(()=>{
         console.info(`Resource with id SomeId was deleted`, response);
     });
     
-    /* find all resource ids */
+    /* Find all resource ids */
     client.resource().findAll(false).then(resources =>{
         console.info(resources.length);
     });
@@ -87,13 +87,26 @@ client.authenticate().then(()=>{
     /* Retrieve Repuesting Party Token for user */
    
     client.entitlement().getAll(user_access_token).then(response =>{
-        console.info("Requesting party token is: ", response.rpt);
+        console.info("Requesting party token is: ", response);
         
         /* Introspect RPT */
-        return client.entitlement().introspectRequestingPartyToken(response.rpt)
+        return client.entitlement().introspectRequestingPartyToken(response.token)
         
     }).then(permissions =>{
         console.info("RPT data: ", permissions);
+    })
+    
+    
+    /* Validate access token without introspection (offline) */
+    
+    client.entitlement().validateToken(user_access_token).then(validToken =>{
+        
+        console.info("User tokenis valid", validToken.content);
+        
+    }).catch(error =>{
+        
+        console.error("User token is expired or invalid");
+        
     })
 });
 

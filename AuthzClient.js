@@ -104,6 +104,14 @@ class AuthzClient {
     get realm(){
        return this._realm;
     }
+
+    get grantManager(){
+        return this._grantManager;
+    }
+
+    get credentials(){
+        return this._credentials;
+    }
 }
 
 module.exports = AuthzClient;
