@@ -82,6 +82,16 @@ describe("AuthzClient composition", function(){
 
     });
 
+
+    it("Allows to access admin namespace with authentication", function(){
+
+        const resource = client.admin();
+
+
+        expect(client.admin()).toEqual(resource);
+
+    });
+
     it("Allows to ensure freshness of access token", function(done){
 
 

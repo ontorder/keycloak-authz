@@ -14,6 +14,7 @@ class EntitlementResource extends HttpResource {
     /**
      * @override
      * @param uri
+     * @param access_token
      */
     get(uri, access_token){
         return this._client.refreshGrant().then(()=>{
@@ -36,8 +37,7 @@ class EntitlementResource extends HttpResource {
 
     getAll(access_token){
         return this.get("/authz/entitlement/" + this._client.clientId, access_token).then((response) =>{
-            let token = new Token(response.rpt, this._client.clientId);
-            return token;
+            return  new Token(response.rpt, this._client.clientId);
         })
     }
 

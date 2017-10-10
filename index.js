@@ -3,5 +3,6 @@ module.exports = {
     UMAResource: require("./UMAResource"),
     UMAScope: require("./UMAScope"),
     ProtectedResource: require('./ProtectedResource'),
-
+    EntitlementResource: require('./EntitlementResource'),
+    AdminResource: require('./AdminResource')
 };
