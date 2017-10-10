@@ -126,6 +126,21 @@ client.authenticate().then(()=>{
       console.info("Policy has been created", policy.id);
    });  
    
+   
+   /** Update some policy **/
+   userBasedPolicy.addUser("someNewUser")
+   .setName("Renamed")
+   .setLogic(KeycloakUserPolicy.logic.NEGATIVE);
+  
+   client.admin().policy().update(userBasedPolicy).then(policy =>{
+         console.info("Policy has been updated", policy.id);
+   });
+   
+   /** Search policy by term **/ 
+   client.admin().policy().search({name: "user "}).then(results =>{
+       console.info(`Found ${results.length} policies`);
+   });
+   
 });
 
 

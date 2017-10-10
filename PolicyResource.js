@@ -1,4 +1,7 @@
-const HttpResource = require('./HttpResource');
+const HttpResource = require('./HttpResource'),
+      KeycloakPolicy = require("./KeycloakPolicy"),
+      KeycloakUserPolicy = require('./KeycloakUserPolicy'),
+      KeycloakGroupPolicy = require('./KeycloakGroupPolicy');
 
 class PolicyResource extends HttpResource {
 
@@ -7,32 +10,30 @@ class PolicyResource extends HttpResource {
         this._client = authzClient;
     }
 
+    _getBaseUri(){
+        return `/clients/${this._client.clientInfo.id}/authz/resource-server`;
+    }
+
     create(policy){
-       // TODO
+       if(!policy) throw new Error("Policy is required");
+       return this.post(`${this._getBaseUri()}/policy/${policy.type}`, policy.serialize()).then(response =>{
+           return policy.setId(response.id);
+       });
     }
 
     update(policy){
-        //TODO
+        if(!policy) throw new Error("Policy is required");
+        return this.put(`${this._getBaseUri()}/policy/${policy.type}/${policy.id}`, policy.serialize()).then(response =>{
+            return policy;
+        });
     }
 
-    search(term){
-        //TODO
-    }
-
-    getAssociatedPolicies(id){
-        //TODO
-    }
-
-    getDependentPolicies(id){
-        //TODO
-    }
-
-    getScopes(id){
-        //TODO
-    }
-
-    getResources(id){
-        //TODO
+    search(term = {}, first=0, max=100){
+      return this.get(`${this._getBaseUri()}/policy`, Object.assign(term, {first, max})).then(response =>{
+           return response.map(item=>{
+               return new KeycloakPolicy(item);
+           })
+      })
     }
 }
 
