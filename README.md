@@ -11,7 +11,7 @@ npm install nevermind-corp/keycloak-authz --save
 
 ```javascript
 
-const { UMAResource, AuthzClient, KeycloakUserPolicy, KeycloakGroupPolicy } = require('keycloak-authz');
+const { UMAResource, AuthzClient, KeycloakUserPolicy, KeycloakGroupPolicy, KeycloakPermission } = require('keycloak-authz');
 
 
 
@@ -141,6 +141,49 @@ client.authenticate().then(()=>{
        console.info(`Found ${results.length} policies`);
    });
    
+   
+   /** Create keycloak resource based permission */
+   const permission = new KeycloakPermission();
+         permission.setType(KeycloakPermission.type.RESOURCE_BASED)
+                   .setName("every album resource")
+                   .setLogic(KeycloakPermission.logic.POSITIVE)
+                   .setDescription("Apply user based policy to all resources with type 'albumz'")
+                   .setResourceType('albumz')
+                   .addPolicy(userBasedPolicy.id);
+   
+   client.admin().permission().create(permission).then(created => {
+       console.info("Permission has been created: ", created.id);
+   });
+   
+   /** Create keycloak resource based permission for specified resource list */
+   const permissionForList = new KeycloakPermission();
+         permissionForList.setType(KeycloakPermission.type.RESOURCE_BASED)
+                      .setName("some albums")
+                      .setLogic(KeycloakPermission.logic.POSITIVE)
+                      .setDescription("Apply user based policy to all resources with specified ids")
+                      .addPolicy(userBasedPolicy.id)
+                      .addResource(resource.id)
+                      .addResource(otherResource.id);
+         
+    client.admin().permission().create(permissionForList).then(created => {
+           console.info("Permission has been created: ", created.id);
+    });  
+    
+    /** Create scope based permission **/
+    const scopedPermission = new KeycloakPermission();
+          scopedPermission.setType(KeycloakPermission.type.SCOPE_BASED)
+          .setName("Permission for multiple scopes")
+          .setDescription("Apply multiple policies for some scopes with any resource type")
+          .addPolicy(userBasedPolicy.id)
+          .addPolicy(groupBasedPolicy.id)
+          .addScope(resource.scopes[0].id)
+          .addScope(resource.scopes[1].id);
+          
+    client.admin().permission().create(scopedPermission).then(created => {
+        console.info("Permission has been created: ", created.id);
+    });
+    
+    
 });
 
 
