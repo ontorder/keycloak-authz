@@ -1,6 +1,6 @@
 class KeycloakPolicy {
 
-   constructor({type, id, name, description, logic = KeycloakPolicy.logic.POSITIVE, config = {},}){
+   constructor({type, id, name, description, logic = KeycloakPolicy.logic.POSITIVE, config = {}} = {}){
 
         this._id = id;
         this._name = name;

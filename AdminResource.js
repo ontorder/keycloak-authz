@@ -3,12 +3,14 @@
  * @see https://github.com/keycloak/keycloak/blob/master/themes/src/main/resources/theme/base/admin/resources/js/authz/authz-services.js
  */
 
-const PolicyResource = require('./PolicyResource');
+const PolicyResource = require('./PolicyResource'),
+      PermissionResource = require('./PermissionResource');
 
 class AdminResource {
 
     constructor(authzClient){
         this._policyResource = new PolicyResource(authzClient);
+        this._permissionResource = new PermissionResource(authzClient);
     }
 
 
@@ -18,7 +20,7 @@ class AdminResource {
     }
 
     permission(){
-        //TODO
+        return this._permissionResource;
     }
 
 

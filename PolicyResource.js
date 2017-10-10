@@ -35,6 +35,16 @@ class PolicyResource extends HttpResource {
            })
       })
     }
+
+    getScopes(id){
+        if(!id) throw new Error("Id is required");
+        return this.get(`${this._getBaseUri()}/policy/${id}/scopes`);
+    }
+
+    getResources(id){
+        if(!id) throw new Error("Id is required");
+        return this.get(`${this._getBaseUri()}/policy/${id}/resources`);
+    }
 }
 
 module.exports = PolicyResource;

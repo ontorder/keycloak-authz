@@ -27,4 +27,9 @@ describe("Admin namespace REST client", function(){
         expect(typeof resource.policy().create).toEqual("function");
     });
 
+    it("Allows to manage authz permissions", function(){
+        expect(typeof resource.permission()).toEqual("object");
+        expect(typeof resource.permission().create).toEqual("function");
+    });
+
 });

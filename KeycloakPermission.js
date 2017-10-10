@@ -9,7 +9,7 @@ class KeycloakPermission {
                    config = {},
                    policies = [],
                    resources = [],
-                   scopes = [] }){
+                   scopes = [] } = {}){
 
         this._id = id;
         this._name = name;
