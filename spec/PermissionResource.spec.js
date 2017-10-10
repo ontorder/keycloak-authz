@@ -50,6 +50,8 @@ describe("Permission REST client", function(){
                 expect(err).toBeFalsy();
                 done();
             })
+
+
         });
     });
 

@@ -113,7 +113,7 @@ describe("UMA resource REST client", function(){
 
     it("Allows to delete resource by id", function(done){
 
-        resource.deleteById(createdResource.id).then(() =>{
+        resource.deleteById(createdResource.name).then(() =>{
             done();
         }).catch(() =>{
             done();
