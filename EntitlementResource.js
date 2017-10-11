@@ -52,7 +52,7 @@ class EntitlementResource extends HttpResource {
         return this._client.refreshGrant().then(()=>{
             let options = {
                 method: 'POST',
-                uri: `${this._client.url}/auth/realms/test/protocol/openid-connect/token/introspect`,
+                uri: `${this._client.url}/auth/realms/${this._client.realm}/protocol/openid-connect/token/introspect`,
                 headers: {
                     "Authorization": 'Basic ' + new Buffer(this._client.clientId + ':' + this._client.credentials.secret).toString('base64'),
                     'Content-Type': 'application/x-www-form-urlencoded',
