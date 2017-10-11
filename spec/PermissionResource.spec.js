@@ -59,7 +59,7 @@ describe("Permission REST client", function(){
 
         expect(()=>resource.update()).toThrowError("Permission is required");
 
-        permission.setName(`Updated ${Math.random()}`)
+        permission.setName(`test Updated ${Math.random()}`)
             .setDescription("Test permission UPDATED")
             .setLogic(KeycloakPermission.logic.NEGATIVE);
         resource.update(permission).then(created =>{

@@ -2,9 +2,10 @@ const KeycloakPolicy = require('./KeycloakPolicy');
 
 class KeycloakGroupPolicy extends KeycloakPolicy {
 
-    constructor({id, name, description, logic, groups = [] }){
+    constructor({id, name, description, logic, groups = [], groupsClaim = "groups" }){
         super({id, name, description, logic, type: KeycloakPolicy.type.GROUP_BASED });
         this._groups = groups;
+        this.groupsClaim = groupsClaim;
     }
 
     setGroups(value){
@@ -23,6 +24,7 @@ class KeycloakGroupPolicy extends KeycloakPolicy {
     serialize(){
         let obj = super.serialize();
         obj.groups = this._groups;
+        obj.groupsClaim = this.groupsClaim;
         return obj;
     }
 

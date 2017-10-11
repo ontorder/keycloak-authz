@@ -14,7 +14,6 @@ describe("UMA resource REST client", function(){
             resource = new ProtectedResource(client);
             originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
             jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
-
             done();
         });
     });
@@ -36,7 +35,6 @@ describe("UMA resource REST client", function(){
             .addScope("api:event:manage");
 
         createdResource = res;
-
         resource.create(res).then((response) =>{
             expect(response).toBeTruthy();
             expect(response).toEqual(res);
@@ -93,7 +91,6 @@ describe("UMA resource REST client", function(){
             expect(error).toBeFalsy();
             done();
         });
-
     });
 
 
