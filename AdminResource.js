@@ -13,8 +13,6 @@ class AdminResource {
         this._permissionResource = new PermissionResource(authzClient);
     }
 
-
-
     policy(){
         return this._policyResource;
     }
@@ -39,7 +37,6 @@ class AdminResource {
     client(){
         //TODO
     }
-
 
 }
 

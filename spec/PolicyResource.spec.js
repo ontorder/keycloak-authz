@@ -8,7 +8,6 @@ describe("Policy REST client", function(){
     let resource = null, originalTimeout  = null, client = null, policy = null;
 
     beforeAll((done) =>{
-
         client = new AuthzClient(config);
         client.authenticate().then(()=>{
             resource = new PolicyResource(client);
@@ -22,11 +21,8 @@ describe("Policy REST client", function(){
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-
     it("Allows to create policy", function(done){
-
         expect(()=>resource.create()).toThrowError("Policy is required");
-
         policy = new KeycloakPolicy({type: KeycloakPolicy.type.JS_BASED})
         policy.setName(`Test ${Math.random()}`)
             .setDescription("Test script based policy")
@@ -45,9 +41,7 @@ describe("Policy REST client", function(){
     });
 
     it("Allows to update policy", function(done){
-
         expect(()=>resource.update()).toThrowError("Policy is required");
-
         policy.setName(`Test ${Math.random()}`)
             .setDescription("Test script based policy UPDATED")
             .setLogic(KeycloakPolicy.logic.NEGATIVE)

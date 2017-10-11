@@ -4,7 +4,6 @@ class Token {
     constructor(token, clientId){
         this.token = token;
         this.clientId = clientId;
-
         if (token) {
             try {
                 const parts = token.split('.');

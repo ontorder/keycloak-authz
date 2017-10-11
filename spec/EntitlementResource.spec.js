@@ -7,7 +7,6 @@ describe("Entitlement api  REST client", function(){
     let resource = null, originalTimeout  = null, client = null, rpt = null;
 
     beforeAll((done) =>{
-
         client = new AuthzClient(config);
         client.authenticate().then(()=>{
             resource = new EntitlementResource(client);
@@ -21,7 +20,6 @@ describe("Entitlement api  REST client", function(){
     afterAll(function() {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
-
 
     it("Allows to fetch  Requesting Party Token ", function(done){
         resource.getAll(client.grant.access_token.token).then(response =>{
@@ -40,7 +38,6 @@ describe("Entitlement api  REST client", function(){
             done();
         })
     });
-
 
     it("Allows to validate token without introspection ", function(done){
         resource.validateToken(rpt).then((response) =>{

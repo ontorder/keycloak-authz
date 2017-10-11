@@ -4,12 +4,9 @@ const UMAResource = require('./UMAResource'),
 class ProtectedResource extends HttpResource {
 
     constructor(authzClient){
-
         super(authzClient);
         this._client = authzClient;
-
     }
-
 
     create(resource){
         if(!resource || !(resource.name)) throw new Error("Resource is required");
@@ -18,9 +15,7 @@ class ProtectedResource extends HttpResource {
                 resource.setId(response['_id']);
                 return resource;
             });
-
     }
-
 
     update(resource){
         if(!resource || !(resource.name)) throw new Error("Resource is required");
@@ -46,7 +41,6 @@ class ProtectedResource extends HttpResource {
     }
 
     findAll( deep = false ){
-
         return this.get(`/authz/protection/resource_set`).then(response =>{
             if(!deep) return response;
             return Promise.all(response.map(id => this.findById(id)))

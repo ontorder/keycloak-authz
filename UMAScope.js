@@ -18,6 +18,7 @@ class UMAScope {
         if(this.icon_uri) obj.icon_uri = this.icon_uri;
         return obj;
     }
+
 }
 
 module.exports = UMAScope;

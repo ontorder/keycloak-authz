@@ -5,9 +5,7 @@ describe("Keycloak Permission  representation", function(){
     let resource = null;
 
     beforeAll(function(){
-
         resource = new KeycloakPermission({type: KeycloakPermission.type.RESOURCE_BASED});
-
     });
 
     it("Has policy type list", function(){
@@ -21,7 +19,6 @@ describe("Keycloak Permission  representation", function(){
         expect(typeof logic).toEqual("object");
         expect(logic.NEGATIVE).toEqual("NEGATIVE");
     });
-
 
     it("Has chainable method to manage name", function(){
         let name = "newName";
@@ -68,7 +65,6 @@ describe("Keycloak Permission  representation", function(){
     it("Has chainable method to manage policies", function(){
         expect(resource.policies).toEqual([]);
         expect(()=>resource.setPolicies()).toThrowError("Policies is required");
-
         expect(resource.setPolicies(["id","id2"])).toEqual(resource);
         resource.addPolicy("id3");
         expect(resource.policies).toEqual(["id","id2", "id3"]);
@@ -77,7 +73,6 @@ describe("Keycloak Permission  representation", function(){
     it("Has chainable method to manage resources", function(){
         expect(resource.resources).toEqual([]);
         expect(()=>resource.setResources()).toThrowError("Resources is required");
-
         expect(resource.setResources(["id","id2"])).toEqual(resource);
         resource.addResource("id3");
         expect(resource.resources).toEqual(["id","id2", "id3"]);
@@ -86,7 +81,6 @@ describe("Keycloak Permission  representation", function(){
     it("Has chainable method to manage scopes", function(){
         expect(resource.scopes).toEqual([]);
         expect(()=>resource.setScopes()).toThrowError("Scopes is required");
-
         expect(resource.setScopes(["id","id2"])).toEqual(resource);
         resource.addScope("id3");
         expect(resource.scopes).toEqual(["id","id2", "id3"]);
@@ -94,11 +88,8 @@ describe("Keycloak Permission  representation", function(){
 
     it("Has chainable method to manage resourceType", function(){
         expect(resource.resourceType).toBeFalsy();
-
         expect(()=>resource.setResourceType()).toThrowError("ResourceType is required");
-
         expect(resource.setResourceType("event")).toEqual(resource);
-
         expect(resource.resourceType).toEqual("event");
     });
 
@@ -116,4 +107,5 @@ describe("Keycloak Permission  representation", function(){
         });
         expect(resource.serialize().any).toEqual("typeSpecofocConfigurationValue");
     });
+
 });

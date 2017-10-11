@@ -5,10 +5,8 @@ const request = require('request-promise-native'),
 class EntitlementResource extends HttpResource {
 
     constructor(authzClient){
-
         super(authzClient);
         this._client = authzClient;
-
     }
 
     /**
@@ -32,13 +30,10 @@ class EntitlementResource extends HttpResource {
         });
     }
 
-
-
-
     getAll(access_token){
         return this.get("/authz/entitlement/" + this._client.clientId, access_token).then((response) =>{
             return  new Token(response.rpt, this._client.clientId);
-        })
+        });
     }
 
     validateToken(token){

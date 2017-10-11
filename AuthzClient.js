@@ -8,7 +8,6 @@ const GrantManager = require('keycloak-auth-utils').GrantManager,
 class AuthzClient {
 
     constructor({url, realm, clientId, credentials = {}, publicClient = false}){
-
         if(!url) throw new Error("Required param is missing: url");
         if(!realm) throw new Error("Required param is missing: realm");
         if(!clientId) throw new Error("Required param is missing: clientId");
@@ -27,16 +26,11 @@ class AuthzClient {
     }
 
     isAuthenticated(){
-
         return !!(this._grant && !this._grant.isExpired());
-
     }
 
-
     authenticate(){
-
         if(this.isAuthenticated()) return Promise.resolve(true);
-
         const config = new KcConfig({
             realm: this._realm,
             clientId: this._clientId,
@@ -44,24 +38,19 @@ class AuthzClient {
             serverUrl: this._kcUrl + "/auth",
             public: this._public
         });
-
         this._grantManager = new GrantManager(config);
-
         let promise = Promise.resolve(false);
-
         if ( this._credentials.password ) {
             promise = this._grantManager.obtainDirectly( this._credentials.username, this._credentials.password );
         } else {
             promise = this._grantManager.obtainFromClientCredentials();
         }
-
         return promise.then((grant) =>{
             this._grant = grant;
             return this.getClientInfo();
         }).then(()=>{
             return true;
         });
-
     }
 
     getClientInfo(){
@@ -103,7 +92,6 @@ class AuthzClient {
         return this._grantManager
             .userInfo(token)
     }
-
 
     resource(){
         if(!this.isAuthenticated()) throw new Error("Authentication required");

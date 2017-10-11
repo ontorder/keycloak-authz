@@ -2,11 +2,8 @@ const UMAScope = require("./UMAScope");
 
 class UMAResource {
 
-
     constructor({name, _id = null, uri = null, type = null, icon_uri = null, owner = null, scopes = [] }){
-
         if(!name) throw new Error("ResourceSetName is required");
-
         this._name = name;
         this._uri = uri;
         this._type = type;
@@ -14,10 +11,8 @@ class UMAResource {
         this._iconUri = icon_uri;
         this._owner = owner;
         this._id = _id;
-
         this.setScopes(scopes)
     }
-
 
     get name(){
         return this._name;
@@ -49,24 +44,18 @@ class UMAResource {
         return this;
     }
 
-
     get scopes(){
         return this._scopes;
     }
 
     setScopes(newScopes){
-
         newScopes  = newScopes || [];
-
         this._scopes = [];
-
         newScopes.forEach(scope =>{
             if(typeof scope === "string") this._scopes.push(new UMAScope({name: scope}));
             if(typeof scope === "object") this._scopes.push(new UMAScope(scope));
         });
-
         return this;
-
     }
 
     addScope(scopeName){
@@ -112,12 +101,10 @@ class UMAResource {
         return this;
     }
 
-
     serialize(){
         let object = {
             name: this.name
         };
-
         if(this.uri) object.uri = this.uri;
         if(this.type) object.type = this.type;
         if(this.iconUri) object.icon_uri = this.iconUri;
@@ -126,7 +113,6 @@ class UMAResource {
         if(this.id) object._id = this.id;
         return object;
     }
-
 
     equal(object){
        return (object.name === this.name && object.id === this.id &&

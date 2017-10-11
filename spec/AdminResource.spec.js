@@ -7,7 +7,6 @@ describe("Admin namespace REST client", function(){
     let resource = null, originalTimeout  = null, client = null, rpt = null;
 
     beforeAll((done) =>{
-
         client = new AuthzClient(config);
         client.authenticate().then(()=>{
             resource = new AdminResource(client);
@@ -20,7 +19,6 @@ describe("Admin namespace REST client", function(){
     afterAll(function() {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
-
 
     it("Allows to manage authz policies", function(){
         expect(typeof resource.policy()).toEqual("object");

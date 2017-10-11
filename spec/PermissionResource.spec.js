@@ -9,7 +9,6 @@ describe("Permission REST client", function(){
     let resource = null, originalTimeout  = null, client = null, permission = null, policy = null;
 
     beforeAll((done) =>{
-
         client = new AuthzClient(config);
         client.authenticate().then(()=>{
             resource = new PermissionResource(client);
@@ -18,7 +17,6 @@ describe("Permission REST client", function(){
                 .setType(KeycloakPolicy.type.JS_BASED)
                 .setConfig({code: " $evaluation.grant(); "})
                 .setLogic(KeycloakPolicy.logic.POSITIVE);
-
             originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
             jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
             done();
@@ -29,11 +27,8 @@ describe("Permission REST client", function(){
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-
     it("Allows to create permission", function(done){
-
         expect(()=>resource.create()).toThrowError("Permission is required");
-
         client.admin().policy().create(policy).then(()=>{
             permission = new KeycloakPermission({type: KeycloakPermission.type.RESOURCE_BASED});
             permission.setName(`Test permission ${Math.random()}`)
@@ -41,7 +36,6 @@ describe("Permission REST client", function(){
                 .setLogic(KeycloakPermission.logic.POSITIVE)
                 .setResourceType("event")
                 .addPolicy(policy.id);
-
             resource.create(permission).then(created =>{
                 expect(created).toEqual(permission);
                 expect(created.id).toBeTruthy();
@@ -50,15 +44,11 @@ describe("Permission REST client", function(){
                 expect(err).toBeFalsy();
                 done();
             })
-
-
         });
     });
 
     it("Allows to update permission", function(done){
-
         expect(()=>resource.update()).toThrowError("Permission is required");
-
         permission.setName(`test Updated ${Math.random()}`)
             .setDescription("Test permission UPDATED")
             .setLogic(KeycloakPermission.logic.NEGATIVE);

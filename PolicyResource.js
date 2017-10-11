@@ -45,6 +45,7 @@ class PolicyResource extends HttpResource {
         if(!id) throw new Error("Id is required");
         return this.get(`${this._getBaseUri()}/policy/${id}/resources`);
     }
+
 }
 
 module.exports = PolicyResource;

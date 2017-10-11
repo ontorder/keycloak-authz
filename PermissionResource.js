@@ -55,6 +55,7 @@ class PermissionResource extends HttpResource {
         if(!permissionId) throw new Error("Permission Id is required");
         return this.get(`${this._getBaseUri()}/permission/${permissionId}/resources`);
     }
+
 }
 
 module.exports = PermissionResource;

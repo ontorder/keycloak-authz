@@ -8,9 +8,7 @@ describe("Keycloak Policy  representation", function(){
     let resource = null;
 
     beforeAll(function(){
-
         resource = new KeycloakPolicy({type: KeycloakPolicy.type.USER_BASED});
-
     });
 
     it("Has policy type list", function(){
@@ -88,9 +86,7 @@ describe("Keycloak User based Policy representation", function(){
     let resource = null;
 
     beforeAll(function(){
-
         resource = new KeycloakUserPolicy({name: "testPolicy"});
-
     });
 
     it("Has chainable method to manage users", function(){
@@ -109,7 +105,6 @@ describe("Keycloak User based Policy representation", function(){
     it("Can be serialized with type specific config", function(){
         expect(resource.serialize().name).toEqual(resource.name);
         expect(typeof resource.serialize().config).toEqual("undefined");
-
         expect(resource.serialize().users).toEqual(["test"]);
     });
 
@@ -119,9 +114,7 @@ describe("Keycloak Script based Policy representation", function(){
     let resource = null;
 
     beforeAll(function(){
-
         resource = new KeycloakScriptPolicy({name: "testPolicy", code: "alert('Hello World!')"});
-
     });
 
     it("Has chainable method to manage code", function(){
@@ -138,9 +131,7 @@ describe("Keycloak Script based Policy representation", function(){
 
     it("Can be serialized with type specific config", function(){
         expect(resource.serialize().name).toEqual(resource.name);
-
         expect(typeof resource.serialize().config).toEqual("undefined");
-
         expect(resource.serialize().code).toBeTruthy();
     });
 
@@ -150,9 +141,7 @@ describe("Keycloak Group based Policy representation", function(){
     let resource = null;
 
     beforeAll(function(){
-
         resource = new KeycloakGroupPolicy({name: "testPolicy"});
-
     });
 
     it("Has chainable method to manage groups", function(){
@@ -169,9 +158,7 @@ describe("Keycloak Group based Policy representation", function(){
 
     it("Can be serialized with type specific config", function(){
         expect(resource.serialize().name).toEqual(resource.name);
-
         expect(typeof resource.serialize().config).toEqual("undefined");
-
         expect(resource.serialize().groups).toBeTruthy();
     });
 

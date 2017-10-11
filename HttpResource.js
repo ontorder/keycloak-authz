@@ -63,7 +63,6 @@ class HttpResource {
         }).catch(response =>{
             throw new Error(response.error.errorMessage);
         });
-
     }
 
     delete(uri){

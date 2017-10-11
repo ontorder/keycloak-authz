@@ -23,7 +23,6 @@ class KeycloakPermission {
         this._config = config;
    }
 
-
    get policies(){
        return this._policies;
    }
@@ -44,7 +43,6 @@ class KeycloakPermission {
    get resources(){
        return this._resources;
    }
-
 
    addResource(id){
        if(id){
@@ -73,7 +71,6 @@ class KeycloakPermission {
        this._scopes = value;
        return this;
    }
-
 
    get resourceType(){
        return this._resourceType;
@@ -170,7 +167,6 @@ class KeycloakPermission {
        if(typeof this._config === "object"){
            Object.assign(object, this._config);
        }
-
        if(this.scopes) object.scopes = this._scopes;
        if(this.resources) object.resources = this._resources;
        if(this.policies) object.policies = this._policies;
