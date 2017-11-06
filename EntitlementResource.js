@@ -41,7 +41,7 @@ class EntitlementResource extends HttpResource {
     }
 
     /*** Hack:  custom protected request via admin evaluation api **/
-    getByResourceType(userId, resourceType, context = {}, clientId = this._client.clientId){
+    getByResourceType(userId, resourceType, context = {}, clientId = this._client.clientInfo.id){
 
         let uri = `${this._client.url}/auth/admin/realms/${this._client.realm}/${this._getEvaluatingBaseUri()}`;
 
@@ -52,20 +52,21 @@ class EntitlementResource extends HttpResource {
                 headers: {
                     "Authorization": `Bearer ${this._client.grant.access_token.token}`
                 },
-                json: true,
                 body: {
                     clientId: clientId,
                     context: {
                         attributes: context
                     },
                     userId: userId,
+                    entitlements: false,
                     resources: [
                         {
                            type: resourceType,
-                           scope: []
+                           scopes: []
                         }
                     ]
-                }
+                },
+                json: true
             };
             return request(options);
             
@@ -84,10 +85,10 @@ class EntitlementResource extends HttpResource {
                 headers: {
                     "Authorization": `Bearer ${access_token}`
                 },
-                json: true,
                 body: {
                     permissions: permissions
-                }
+                },
+                json: true
             };
             return request(options);
         }).catch(response =>{
