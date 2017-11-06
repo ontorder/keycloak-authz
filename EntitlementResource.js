@@ -45,7 +45,7 @@ class EntitlementResource extends HttpResource {
 
         let uri = `${this._client.url}/auth/admin/realms/${this._client.realm}/${this._getEvaluatingBaseUri()}`;
 
-        this._client.refreshGrant().then(()=>{
+        return this._client.refreshGrant().then(()=>{
             let options = {
                 method: 'POST',
                 uri: uri,
@@ -70,14 +70,14 @@ class EntitlementResource extends HttpResource {
             return request(options);
             
         }).catch(response =>{
-            throw new Error(response.error.errorMessage);
+            throw response.error;
         });
 
 
     }
 
     getByPermissions(access_token, permissions, clientId = this._client.clientId){
-        this._client.refreshGrant().then(()=>{
+        return this._client.refreshGrant().then(()=>{
             let options = {
                 method: 'POST',
                 uri: this._prepareUri('/authz/entitlement/' + clientId),
@@ -91,7 +91,7 @@ class EntitlementResource extends HttpResource {
             };
             return request(options);
         }).catch(response =>{
-            throw new Error(response.error.errorMessage);
+            throw response.error;
         });
     }
 
