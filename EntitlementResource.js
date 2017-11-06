@@ -68,6 +68,7 @@ class EntitlementResource extends HttpResource {
                 }
             };
             return request(options);
+            
         }).catch(response =>{
             throw new Error(response.error.errorMessage);
         });
@@ -97,7 +98,7 @@ class EntitlementResource extends HttpResource {
 
     validateToken(token){
         if(typeof token === "string"){
-            token = new Token(token, this._client.clientId);
+            token = new Token(token, this._client.clientId, this._client.realIss);
         }
         return this._client.grantManager.validateToken(token);
     }

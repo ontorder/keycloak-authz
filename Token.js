@@ -1,7 +1,7 @@
 
 class Token {
 
-    constructor(token, clientId){
+    constructor(token, clientId, iss){
         this.token = token;
         this.clientId = clientId;
         if (token) {
@@ -11,6 +11,10 @@ class Token {
                 this.content = JSON.parse(new Buffer(parts[1], 'base64').toString());
                 this.signature = new Buffer(parts[2], 'base64');
                 this.signed = parts[0] + '.' + parts[1];
+
+                if(iss){
+                    this.content.iss = iss;
+                }
             } catch (err) {
                 this.content = {
                     exp: 0

@@ -7,7 +7,7 @@ const GrantManager = require('keycloak-auth-utils').GrantManager,
 
 class AuthzClient {
 
-    constructor({url, realm, clientId, credentials = {}, publicClient = false}){
+    constructor({url, realm, clientId, credentials = {}, publicClient = false, realIss = null}){
         if(!url) throw new Error("Required param is missing: url");
         if(!realm) throw new Error("Required param is missing: realm");
         if(!clientId) throw new Error("Required param is missing: clientId");
@@ -23,6 +23,8 @@ class AuthzClient {
         this._entitlementResource = new EntitlementResource(this);
         this._adminResource = new AdminResource(this);
         this._clientInfo = null;
+        // Hack: if keycloak works in private network, we should be able to validate token with custom iss
+        this.realIss = realIss;
     }
 
     isAuthenticated(){
