@@ -1,8 +1,8 @@
 module.exports ={
     url: 'http://localhost:8080',
-    clientId: 'api',
-    realm: 'test',
+    clientId: 'api-gateway',
+    realm: 'proficonf',
     credentials: {
-        secret: "b6ac002a-ee0b-4e16-9961-201d31221af5"
+        secret: "56d484fb-903e-4232-ba0d-65a845ea5657"
     }
 };

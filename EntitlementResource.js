@@ -26,18 +26,21 @@ class EntitlementResource extends HttpResource {
             };
             return request(options);
         }).catch(response =>{
-            throw new Error(response.error.errorMessage);
+            console.error(response.error);
+            throw response.error;
         });
     }
 
     getAll(access_token){
-        return this.get("/authz/entitlement/" + this._client.clientId, access_token).then((response) =>{
-            return  new Token(response.rpt, this._client.clientId);
+        return this.get("/authz/entitlement/" + this._client.clientId, access_token).then(response =>{
+            let tok =  new Token(response.rpt, this._client.clientId);
+            console.info(tok);
+            return tok;
         });
     }
 
     _getEvaluatingBaseUri(){
-        return `/clients/${this._client.clientInfo.id}/authz/resource-server/policy/evaluate`;
+        return `clients/${this._client.clientInfo.id}/authz/resource-server/policy/evaluate`;
     }
 
     /*** Hack:  custom protected request via admin evaluation api **/
@@ -71,6 +74,40 @@ class EntitlementResource extends HttpResource {
             return request(options);
             
         }).catch(response =>{
+
+            throw response.error;
+        });
+
+
+    }
+
+
+    getByResourceList(userId, resources, context = {}, clientId = this._client.clientInfo.id){
+
+        let uri = `${this._client.url}/auth/admin/realms/${this._client.realm}/${this._getEvaluatingBaseUri()}`;
+
+        return this._client.refreshGrant().then(()=>{
+            let options = {
+                method: 'POST',
+                uri: uri,
+                headers: {
+                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
+                },
+                body: {
+                    clientId: clientId,
+                    context: {
+                        attributes: context
+                    },
+                    userId: userId,
+                    entitlements: false,
+                    resources: resources
+                },
+                json: true
+            };
+            return request(options);
+
+        }).catch(response =>{
+
             throw response.error;
         });
 
@@ -92,6 +129,7 @@ class EntitlementResource extends HttpResource {
             };
             return request(options);
         }).catch(response =>{
+            console.error(response.error);
             throw response.error;
         });
     }
