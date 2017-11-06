@@ -9,5 +9,6 @@ module.exports = {
     KeycloakUserPolicy: require('./KeycloakUserPolicy'),
     KeycloakGroupPolicy: require('./KeycloakGroupPolicy'),
     KeycloakScriptPolicy: require('./KeycloakScriptPolicy'),
-    KeycloakPermission: require("./KeycloakPermission")
+    KeycloakPermission: require("./KeycloakPermission"),
+    Token: require('./Token')
 };

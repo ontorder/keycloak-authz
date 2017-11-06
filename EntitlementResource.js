@@ -98,7 +98,7 @@ class EntitlementResource extends HttpResource {
 
     validateToken(token){
         if(typeof token === "string"){
-            token = new Token(token, this._client.clientId, this._client.realIss);
+            token = new Token(token, this._client.clientId, this._client.grantManager.realmUrl);
         }
         return this._client.grantManager.validateToken(token);
     }
