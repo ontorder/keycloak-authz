@@ -43,11 +43,10 @@ class EntitlementResource extends HttpResource {
         return `clients/${this._client.clientInfo.id}/authz/resource-server/policy/evaluate`;
     }
 
-    /*** Hack:  custom protected request via admin evaluation api **/
-    getByResourceType(userId, resourceType, context = {}, clientId = this._client.clientInfo.id){
 
+    /** evaluate permissions via admin endpoint **/
+    evaluate(body = {}){
         let uri = `${this._client.url}/auth/admin/realms/${this._client.realm}/${this._getEvaluatingBaseUri()}`;
-
         return this._client.refreshGrant().then(()=>{
             let options = {
                 method: 'POST',
@@ -55,63 +54,16 @@ class EntitlementResource extends HttpResource {
                 headers: {
                     "Authorization": `Bearer ${this._client.grant.access_token.token}`
                 },
-                body: {
-                    clientId: clientId,
-                    context: {
-                        attributes: context
-                    },
-                    userId: userId,
-                    entitlements: false,
-                    resources: [
-                        {
-                           type: resourceType,
-                           scopes: []
-                        }
-                    ]
-                },
+                body: body,
                 json: true
             };
             return request(options);
+
+        }).catch(response =>{
             
-        }).catch(response =>{
-
             throw response.error;
+
         });
-
-
-    }
-
-
-    getByResourceList(userId, resources, context = {}, clientId = this._client.clientInfo.id){
-
-        let uri = `${this._client.url}/auth/admin/realms/${this._client.realm}/${this._getEvaluatingBaseUri()}`;
-
-        return this._client.refreshGrant().then(()=>{
-            let options = {
-                method: 'POST',
-                uri: uri,
-                headers: {
-                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
-                },
-                body: {
-                    clientId: clientId,
-                    context: {
-                        attributes: context
-                    },
-                    userId: userId,
-                    entitlements: false,
-                    resources: resources
-                },
-                json: true
-            };
-            return request(options);
-
-        }).catch(response =>{
-
-            throw response.error;
-        });
-
-
     }
 
     getByPermissions(access_token, permissions, clientId = this._client.clientId){

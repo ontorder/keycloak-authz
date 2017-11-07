@@ -7,7 +7,7 @@ const GrantManager = require('keycloak-auth-utils').GrantManager,
 
 class AuthzClient {
 
-    constructor({url, realm, clientId, credentials = {}, publicClient = false}){
+    constructor({url, realm, clientId, credentials = {}, publicClient = false, clientIdentifier = null, allowAdmin = false }){
         if(!url) throw new Error("Required param is missing: url");
         if(!realm) throw new Error("Required param is missing: realm");
         if(!clientId) throw new Error("Required param is missing: clientId");
@@ -23,11 +23,13 @@ class AuthzClient {
         this._entitlementResource = new EntitlementResource(this);
         this._adminResource = new AdminResource(this);
         this._clientInfo = null;
+        this._clientIdentifier = clientIdentifier;
+        this._allowAdmin = allowAdmin;
 
     }
 
     isAuthenticated(){
-        return !!(this._grant && !this._grant.isExpired());
+        return !!(this._grant);
     }
 
     authenticate(){
@@ -48,13 +50,23 @@ class AuthzClient {
         }
         return promise.then((grant) =>{
             this._grant = grant;
-            return this.getClientInfo();
-        }).then(()=>{
+            let promise = Promise.resolve({
+                clientId: this.clientId,
+                id: this._clientIdentifier
+            });
+            if(this._clientIdentifier) return promise;
+            return this.getClientInfo(this._clientId);
+        }).then((clientInfo)=>{
+
+            this._clientInfo = clientInfo;
             return true;
+
         });
     }
 
-    getClientInfo(){
+    /** requires realm-management roles for this action **/
+    getClientInfo( clientId ){
+        if(!this._allowAdmin) return Promise.resolve({});
         return this.refreshGrant().then(()=>{
             let options = {
                 method: 'GET',
@@ -65,10 +77,10 @@ class AuthzClient {
                 json: true
             };
             return request(options).then((clientList) =>{
-                this._clientInfo  = clientList.filter(client =>{
-                    return client.clientId === this.clientId
+                let clientInfo  = clientList.filter(client =>{
+                    return client.clientId === clientId
                 }).shift();
-                return this._clientInfo;
+                return clientInfo;
             })
         }).catch(response =>{
             throw new Error(response.error);
@@ -106,6 +118,7 @@ class AuthzClient {
 
     admin(){
         if(!this.isAuthenticated()) throw new Error("Authentication required");
+        if(!this._allowAdmin) return Promise.reject(new Error("Admin endpoint is disabled"));
         return this._adminResource;
     }
 
