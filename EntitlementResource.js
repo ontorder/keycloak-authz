@@ -39,14 +39,14 @@ class EntitlementResource extends HttpResource {
         });
     }
 
-    _getEvaluatingBaseUri(){
-        return `clients/${this._client.clientInfo.id}/authz/resource-server/policy/evaluate`;
+    _getEvaluatingBaseUri(clientIdentifier){
+        return `clients/${clientIdentifier}/authz/resource-server/policy/evaluate`;
     }
 
 
     /** evaluate permissions via admin endpoint **/
-    evaluate(body = {}){
-        let uri = `${this._client.url}/auth/admin/realms/${this._client.realm}/${this._getEvaluatingBaseUri()}`;
+    evaluate(body = {}, clientIdentifier = this._client.clientInfo.id ){
+        let uri = `${this._client.url}/auth/admin/realms/${this._client.realm}/${this._getEvaluatingBaseUri(clientIdentifier)}`;
         return this._client.refreshGrant().then(()=>{
             let options = {
                 method: 'POST',
