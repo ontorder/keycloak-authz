@@ -31,10 +31,9 @@ class EntitlementResource extends HttpResource {
         });
     }
 
-    getAll(access_token){
-        return this.get("/authz/entitlement/" + this._client.clientId, access_token).then(response =>{
-            let tok =  new Token(response.rpt, this._client.clientId);
-            console.info(tok);
+    getAll(access_token, clientId = this._client.clientId){
+        return this.get(`/authz/entitlement/${clientId}`, access_token).then(response =>{
+            let tok =  new Token(response.rpt, clientId);
             return tok;
         });
     }
@@ -70,7 +69,7 @@ class EntitlementResource extends HttpResource {
         return this._client.refreshGrant().then(()=>{
             let options = {
                 method: 'POST',
-                uri: this._prepareUri('/authz/entitlement/' + clientId),
+                uri: this._prepareUri(`/authz/entitlement/${clientId}`),
                 headers: {
                     "Authorization": `Bearer ${access_token}`
                 },
@@ -79,9 +78,8 @@ class EntitlementResource extends HttpResource {
                 },
                 json: true
             };
-            return request(options);
+            return request(options).then(response =>new Token(response.rpt, clientId));
         }).catch(response =>{
-            console.error(response.error);
             throw response.error;
         });
     }
