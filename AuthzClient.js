@@ -94,6 +94,10 @@ class AuthzClient {
                 this._grant.update(freshGrant);
                 return true;
             })
+            .catch(()=>{
+                // try to authenticate again
+                return this.authenticate();
+            })
             .catch(exception =>{
                 console.error("Cannot refresh grant", exception);
                 this._grant = false;
