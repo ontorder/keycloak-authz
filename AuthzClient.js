@@ -71,13 +71,11 @@ class AuthzClient {
             });
     }
 
-    async resource(){
-        await this.authenticate();
+    resource(){
         return this._protectedResource;
     }
 
-    async entitlement(){
-        await this.authenticate();
+    entitlement(){
         return this._entitlementResource;
     }
 
