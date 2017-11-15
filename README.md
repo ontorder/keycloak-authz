@@ -28,7 +28,7 @@ let client = new AuthzClient({
 client.authenticate().then(()=>{
     
     /** Create protected resource  **/
-    let resource = new UMAResource("myAwesomeProtectedResource");
+    let resource = new UMAResource({name:"myAwesomeProtectedResource"});
         .setOwner("userId")
         .addScope("api:create")
         .addScope("api:delete")
@@ -82,107 +82,6 @@ client.authenticate().then(()=>{
     client.resource().findAll(true).then(resources =>{
         console.info("All resources with info", resources);
     });
-    
-    
-    /** Retrieve Repuesting Party Token for user **/
-    client.entitlement().getAll(user_access_token).then(response =>{
-        console.info("Requesting party token is: ", response);
-    });
-    
-    
-    /** Introspect RPT **/
-    client.entitlement().introspectRequestingPartyToken(requestingPartyToken).then(validToken =>{
-        console.info("RPT data: ", validToken.content);
-    });
-    
-    
-    /** Validate any type of access token without introspection (offline) **/
-    client.entitlement().validateToken(any_token).then(validToken =>{
-        console.info("User token is valid", validToken.content);  
-    }).catch(error =>{ 
-        console.error("User token is expired or invalid");  
-    });
-    
-    
-    /** Create User Based policy **/
-    const userBasedPolicy = new KeycloakUserPolicy({name: "The participants of meeting #33" });
-    
-    userBasedPolicy.setDescription("Allows to access only for registered participants")
-                   .setLogic(KeycloakUserPolicy.logic.POSITIVE)
-                   .addUser("participantId")
-                   .addUser("otherUserId");
-    
-    client.admin().policy().create(userBasedPolicy).then(policy =>{
-        console.info("Policy has been created", policy.id);
-    });
-    
-    /** Create group based policy **/
-    const groupBasedPolicy = new KeycloakGroupPolicy({name: "The user group"});
-          groupBasedPolicy.setDescription("Deny access for user group")
-                          .setGroups(["groupId"])
-                          .setLogic(KeycloakGroupPolicy.logic.NEGATIVE);
-         
-   client.admin().policy().create(groupBasedPolicy).then(policy =>{
-      console.info("Policy has been created", policy.id);
-   });  
-   
-   
-   /** Update some policy **/
-   userBasedPolicy.addUser("someNewUser")
-   .setName("Renamed")
-   .setLogic(KeycloakUserPolicy.logic.NEGATIVE);
-  
-   client.admin().policy().update(userBasedPolicy).then(policy =>{
-         console.info("Policy has been updated", policy.id);
-   });
-   
-   /** Search policy by term **/ 
-   client.admin().policy().search({name: "user "}).then(results =>{
-       console.info(`Found ${results.length} policies`);
-   });
-   
-   
-   /** Create keycloak resource based permission */
-   const permission = new KeycloakPermission();
-         permission.setType(KeycloakPermission.type.RESOURCE_BASED)
-                   .setName("every album resource")
-                   .setLogic(KeycloakPermission.logic.POSITIVE)
-                   .setDescription("Apply user based policy to all resources with type 'albumz'")
-                   .setResourceType('albumz')
-                   .addPolicy(userBasedPolicy.id);
-   
-   client.admin().permission().create(permission).then(created => {
-       console.info("Permission has been created: ", created.id);
-   });
-   
-   /** Create keycloak resource based permission for specified resource list */
-   const permissionForList = new KeycloakPermission();
-         permissionForList.setType(KeycloakPermission.type.RESOURCE_BASED)
-                      .setName("some albums")
-                      .setLogic(KeycloakPermission.logic.POSITIVE)
-                      .setDescription("Apply user based policy to all resources with specified ids")
-                      .addPolicy(userBasedPolicy.id)
-                      .addResource(resource.id)
-                      .addResource(otherResource.id);
-         
-    client.admin().permission().create(permissionForList).then(created => {
-           console.info("Permission has been created: ", created.id);
-    });  
-    
-    /** Create scope based permission **/
-    const scopedPermission = new KeycloakPermission();
-          scopedPermission.setType(KeycloakPermission.type.SCOPE_BASED)
-          .setName("Permission for multiple scopes")
-          .setDescription("Apply multiple policies for some scopes with any resource type")
-          .addPolicy(userBasedPolicy.id)
-          .addPolicy(groupBasedPolicy.id)
-          .addScope(resource.scopes[0].id)
-          .addScope(resource.scopes[1].id);
-          
-    client.admin().permission().create(scopedPermission).then(created => {
-        console.info("Permission has been created: ", created.id);
-    });
-    
     
 });
 
