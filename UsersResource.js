@@ -45,6 +45,26 @@ class UsersResource extends HttpResource {
 
     }
 
+    async getRoleMappings(userId, realm = this._client.realm ){
+
+        const { body } = await this.get(`/users/${userId}/role-mappings`, {}, realm );
+
+        return body;
+    }
+
+    async addRealmRoles( userId, roles,  realm = this._client.realm ) {
+
+        const { body } = await this.post(`/users/${userId}/role-mappings/realm`, roles, realm );
+
+        return body;
+    }
+
+    async removeRealmRoles( userId, roles,  realm = this._client.realm ) {
+
+        const { body } = await this.delete(`/users/${userId}/role-mappings/realm`, roles, realm );
+
+        return body;
+    }
 
 
 }

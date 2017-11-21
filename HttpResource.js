@@ -98,7 +98,7 @@ class HttpResource {
         });
     }
 
-    delete(uri, realm){
+    delete(uri, body = {},  realm){
         return this._client.refreshGrant().then(()=>{
             let options = {
                 method: 'DELETE',
@@ -106,6 +106,7 @@ class HttpResource {
                 headers: {
                     "Authorization": `Bearer ${this._client.grant.access_token.token}`
                 },
+                body,
                 json: true
             };
 
