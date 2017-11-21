@@ -1,6 +1,7 @@
 const GrantManager = require('keycloak-auth-utils').GrantManager,
       KcConfig = require('keycloak-auth-utils').Config,
       ProtectedResource = require('./ProtectedResource'),
+      AdminResource = require('./AdminResource'),
       EntitlementResource = require('./EntitlementResource');
 
 class AuthzClient {
@@ -18,8 +19,9 @@ class AuthzClient {
         this._public = publicClient;
         this._grant = null;
         this._grantManager = null;
-        this._protectedResource = new ProtectedResource(this);
-        this._entitlementResource = new EntitlementResource(this);
+        this._protectedResource = null;
+        this._entitlementResource = null;
+        this._adminResource = null;
 
     }
 
@@ -71,14 +73,20 @@ class AuthzClient {
             });
     }
 
-    resource(){
+    get resource(){
+        this._protectedResource  =  this._protectedResource || new ProtectedResource(this);
         return this._protectedResource;
     }
 
-    entitlement(){
+    get entitlement(){
+        this._entitlementResource = this._entitlementResource || new EntitlementResource(this);
         return this._entitlementResource;
     }
 
+    get admin(){
+        this._adminResource = this._adminResource || new AdminResource(this);
+        return this._adminResource;
+    }
 
     get grant(){
 

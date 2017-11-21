@@ -36,7 +36,7 @@ client.authenticate().then(()=>{
         .setType("photoz")
         .setUri("/photoz/item/133");  
          
-    client.resource().create(resource).then(created =>{
+    client.resource.create(resource).then(created =>{
         console.info("Resource is created: ", resource.id);
         console.info(resource.equal(created)) // true
     });
@@ -49,7 +49,7 @@ client.authenticate().then(()=>{
         .setOwner("OtherUserId")
         .setType("albumz");
     
-    client.resource().update(resource).then(updated =>{  
+    client.resource.update(resource).then(updated =>{  
         console.log("Resource is updated", updated);
         console.info(resource.equal(updated)) // true
         console.info(resource.hasScope("app:events:participate")) // true
@@ -57,29 +57,29 @@ client.authenticate().then(()=>{
     
     
     /** Find Resource by Id **/
-    client.resource().findById(resource.id).then(result =>{
+    client.resource.findById(resource.id).then(result =>{
         console.info("Search result is:" ,result);
         console.info(result.equal(resource)) // true
     });
     
     
     /** Find resources by filter **/
-    client.resource().findByFilter("type=albumz").then(resources =>{
+    client.resource.findByFilter("type=albumz").then(resources =>{
         console.info(`Found ${resources.length} resources with filter: type=albumz`);
     });
     
     /** Delete resource by id **/
-    client.resource().deleteById("someId").then(response =>{
+    client.resource.deleteById("someId").then(response =>{
         console.info(`Resource with id SomeId was deleted`, response);
     });
     
     /** Find all resource ids **/
-    client.resource().findAll(false).then(resources =>{
+    client.resource.findAll(false).then(resources =>{
         console.info(resources.length);
     });
     
     /** Fetch all resources with their descriptions **/
-    client.resource().findAll(true).then(resources =>{
+    client.resource.findAll(true).then(resources =>{
         console.info("All resources with info", resources);
     });
     
@@ -109,7 +109,7 @@ const client = new AuthzClient({
 await client.authenticate();
 
 /** get user by id **/
-const userRepresentation = await client.admin().users.find({userId: tokenSub})
+const userRepresentation = await client.admin.users.find({userId: tokenSub})
 
 
 })()
