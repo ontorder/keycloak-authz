@@ -11,11 +11,11 @@ npm install nevermind-corp/keycloak-authz --save
 
 ```javascript
 
-const { UMAResource, AuthzClient, KeycloakUserPolicy, KeycloakGroupPolicy, KeycloakPermission } = require('keycloak-authz');
+const { UMAResource, AuthzClient  } = require('keycloak-authz');
 
 
 
-let client = new AuthzClient({
+const client = new AuthzClient({
   url: 'localhost:8080',
   realm: 'master',
   clientId: 'myAwesomeApiService',
@@ -85,6 +85,34 @@ client.authenticate().then(()=>{
     
 });
 
+
+```
+
+
+## Admin cli 
+
+### NOTE: client should have realm management rights to connect as admin ###
+
+```javascript 
+
+(async ()=>{
+
+const client = new AuthzClient({
+  url: 'localhost:8080',
+  realm: 'master',
+  clientId: 'myAwesomeApiService',
+  credentials: {
+      secret: "clientSecret"
+  }
+});
+
+await client.authenticate();
+
+/** get user by id **/
+const userRepresentation = await client.admin().users.find({userId: tokenSub})
+
+
+})()
 
 ```
 

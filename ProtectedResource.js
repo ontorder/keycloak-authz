@@ -10,16 +10,16 @@ class ProtectedResource extends HttpResource {
 
     create(resource){
         if(!resource || !(resource.name)) throw new Error("Resource is required");
-        return this.post('/authz/protection/resource_set', resource.serialize())
-            .then(response =>{
-                resource.setId(response['_id']);
+        return this.post('/authz/protection/resource_set', resource.serialize(), this._client.realm)
+            .then(({body}) =>{
+                resource.setId(body['_id']);
                 return resource;
             });
     }
 
     update(resource){
         if(!resource || !(resource.name)) throw new Error("Resource is required");
-        return this.put("/authz/protection/resource_set/" + resource.id, resource.serialize())
+        return this.put("/authz/protection/resource_set/" + resource.id, resource.serialize(), this._client.realm)
             .then(() =>{
                 return resource;
             });
@@ -27,23 +27,23 @@ class ProtectedResource extends HttpResource {
 
     findById(id){
         if(!id) throw new Error("Id is required");
-        return this.get(`/authz/protection/resource_set/${id}`).then(response =>{
-            if(!response) return false;
-            return new UMAResource(response);
+        return this.get(`/authz/protection/resource_set/${id}`, this._client.realm).then(({body}) =>{
+            if(!body) return false;
+            return new UMAResource(body);
         }).catch(() => false);
     }
 
     findByFilter(filter){
         if(!filter) throw new Error("Filter is required");
-        return this.get(`/authz/protection/resource_set`, {filter}).then(response =>{
-            return Promise.all(response.map(id => this.findById(id)))
+        return this.get(`/authz/protection/resource_set`, {filter}, this._client.realm).then(({body}) =>{
+            return Promise.all(body.map(id => this.findById(id)))
         });
     }
 
     findAll( deep = false ){
-        return this.get(`/authz/protection/resource_set`).then(response =>{
-            if(!deep) return response;
-            return Promise.all(response.map(id => this.findById(id)))
+        return this.get(`/authz/protection/resource_set`, this._client.realm ).then(({body}) =>{
+            if(!deep) return body;
+            return Promise.all(body.map(id => this.findById(id)))
         });
     }
 

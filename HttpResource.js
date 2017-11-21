@@ -1,4 +1,4 @@
-const request = require('request-promise-native');
+const request = require('request');
 
 class HttpResource {
 
@@ -7,75 +7,118 @@ class HttpResource {
         this._client = authzClient;
     }
 
-    _prepareUri(requestedPath){
+    _prepareUri(requestedPath, realm  ){
+
+        realm = realm || this._client.realm;
         let uri = `${this._client.url}/auth/`;
         if(this._isAdminResource) uri += 'admin/';
-        uri += `realms/${this._client.realm}${requestedPath}`;
+        uri += `realms/${realm}${requestedPath}`;
         return uri;
     }
 
-    post(uri, body){
+    post(uri, body, realm){
         return this._client.refreshGrant().then(()=>{
-            let options = {
+            const options = {
                 method: 'POST',
-                uri: this._prepareUri(uri),
+                uri: this._prepareUri(uri, realm),
                 headers: {
                     "Authorization": `Bearer ${this._client.grant.access_token.token}`
                 },
                 body: body,
                 json: true
             };
-            return request(options);
+
+            return new Promise((resolve, reject) =>{
+                request(options, (err, response, body ) => {
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    return resolve( { body, response } );
+                });
+            });
+
+
         }).catch(response =>{
             throw new Error(response.error);
         });
     }
 
-    put(uri, body){
+    put(uri, body, realm){
         return this._client.refreshGrant().then(()=>{
-            let options = {
+            const options = {
                 method: 'PUT',
-                uri: this._prepareUri(uri),
+                uri: this._prepareUri(uri, realm),
                 headers: {
                     "Authorization": `Bearer ${this._client.grant.access_token.token}`
                 },
                 body: body,
                 json: true
             };
-            return request(options);
+
+            return new Promise((resolve, reject) =>{
+                request(options, (err, response, body ) => {
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    return resolve( { body, response } );
+                });
+            });
+
         }).catch(response =>{
             throw new Error(response.error);
         });
     }
 
-    get(uri, queryParams = {}){
+    get(uri, queryParams = {}, realm){
         return this._client.refreshGrant().then(()=>{
-            let options = {
+            const options = {
                 method: 'GET',
-                uri: this._prepareUri(uri),
+                uri: this._prepareUri(uri, realm),
                 headers: {
                     "Authorization": `Bearer ${this._client.grant.access_token.token}`
                 },
                 qs: queryParams,
                 json: true
             };
-            return request(options);
+
+            return new Promise((resolve, reject) =>{
+                request(options, (err, response, body ) => {
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    return resolve({ body, response });
+                });
+            });
+
         }).catch(response =>{
             throw new Error(response.error.errorMessage);
         });
     }
 
-    delete(uri){
+    delete(uri, realm){
         return this._client.refreshGrant().then(()=>{
             let options = {
                 method: 'DELETE',
-                uri: this._prepareUri(uri),
+                uri: this._prepareUri(uri, realm),
                 headers: {
                     "Authorization": `Bearer ${this._client.grant.access_token.token}`
                 },
                 json: true
             };
-            return request(options);
+
+            return new Promise((resolve, reject) =>{
+                request(options, (err, response, body ) => {
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    return resolve( { body, response } );
+                });
+            });
+
         }).catch(response =>{
             throw new Error(response.error.errorMessage);
         });
