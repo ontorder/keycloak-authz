@@ -66,6 +66,18 @@ class UsersResource extends HttpResource {
         return body;
     }
 
+    async getInviteToken (userId, clientId, redirectUri, realm = this._client.realm  ){
+
+        const { body } = await this.get(`/users/${userId}/invite_token`, {
+            client_id: clientId,
+            redirect_uri: redirectUri
+        }, realm );
+
+
+        return body;
+
+    }
+
 
 }
 

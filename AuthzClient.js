@@ -61,10 +61,13 @@ class AuthzClient {
             })
             .catch(()=>{
 
+                console.warn("Cannot refresh grant, re-auth");
+                this._grant = null;
                 return this.authenticate();
 
             })
             .catch(exception =>{
+
                 console.error("Cannot refresh grant", exception);
                 this._grant = false;
 
