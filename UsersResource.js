@@ -5,7 +5,7 @@ class UsersResource extends HttpResource {
     constructor(authzClient){
 
         super(authzClient, true);
-        this._client = authzClient;
+
 
     }
 

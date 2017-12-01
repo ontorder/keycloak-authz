@@ -13,8 +13,6 @@ class AdminResource {
         return this._users;
     }
 
-
-
 }
 
 module.exports = AdminResource;

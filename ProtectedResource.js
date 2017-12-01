@@ -4,8 +4,9 @@ const UMAResource = require('./UMAResource'),
 class ProtectedResource extends HttpResource {
 
     constructor(authzClient){
+
         super(authzClient);
-        this._client = authzClient;
+
     }
 
     create(resource){

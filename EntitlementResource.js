@@ -6,7 +6,6 @@ class EntitlementResource extends HttpResource {
 
     constructor(authzClient){
         super(authzClient);
-        this._client = authzClient;
     }
 
     /**
@@ -14,44 +13,40 @@ class EntitlementResource extends HttpResource {
      * @param uri
      * @param access_token
      */
-    get(uri, access_token){
-        return this._client.refreshGrant().then(()=>{
-            let options = {
-                method: 'GET',
-                uri: this._prepareUri(uri),
-                headers: {
-                    "Authorization": `Bearer ${access_token}`
-                },
-                json: true
-            };
-            return request(options);
-        }).catch(response =>{
-            console.error(response.error);
-            throw response.error;
-        });
+    async get(uri, access_token){
+        const options = {
+            method: 'GET',
+            uri: this._prepareUri(uri),
+            headers: {
+                "Authorization": `Bearer ${access_token}`
+            },
+            json: true
+        };
+
+        return await request(options);
     }
 
-    getAll(access_token, clientId = this._client.clientId){
-        return this.get(`/authz/entitlement/${clientId}`, access_token).then(response =>{
-            let tok =  new Token(response.rpt, clientId);
-            return tok;
-        });
+    async getAll(access_token, clientId = this._client.clientId){
+        const response = await this.get(`/authz/entitlement/${clientId}`, access_token);
+        return new Token(response.rpt, clientId);
     }
 
     _getEvaluatingBaseUri(clientIdentifier){
+
         return `clients/${clientIdentifier}/authz/resource-server/policy/evaluate`;
+
     }
 
 
     /** evaluate permissions via admin endpoint **/
     evaluate(body = {}, clientIdentifier = this._client.clientInfo.id ){
         let uri = `${this._client.url}/auth/admin/realms/${this._client.realm}/${this._getEvaluatingBaseUri(clientIdentifier)}`;
-        return this._client.refreshGrant().then(()=>{
+        return this._client.refreshGrant().then((grant)=>{
             let options = {
                 method: 'POST',
                 uri: uri,
                 headers: {
-                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
+                    "Authorization": `Bearer ${grant.access_token.token}`
                 },
                 body: body,
                 json: true
@@ -59,29 +54,30 @@ class EntitlementResource extends HttpResource {
             return request(options);
 
         }).catch(response =>{
-            
+
             throw response.error;
 
         });
     }
 
-    getByPermissions(access_token, permissions, clientId = this._client.clientId){
-        return this._client.refreshGrant().then(()=>{
-            let options = {
-                method: 'POST',
-                uri: this._prepareUri(`/authz/entitlement/${clientId}`),
-                headers: {
-                    "Authorization": `Bearer ${access_token}`
-                },
-                body: {
-                    permissions: permissions
-                },
-                json: true
-            };
-            return request(options).then(response =>new Token(response.rpt, clientId));
-        }).catch(response =>{
-            throw response.error;
-        });
+    async getByPermissions(access_token, permissions, clientId = this._client.clientId){
+
+        const options = {
+            method: 'POST',
+            uri: this._prepareUri(`/authz/entitlement/${clientId}`),
+            headers: {
+                "Authorization": `Bearer ${access_token}`
+            },
+            body: {
+                permissions: permissions
+            },
+            json: true
+        };
+
+        const response = await request(options);
+
+        return new Token(response.rpt, clientId);
+
     }
 
 

@@ -47,7 +47,7 @@ class AuthzClient {
             .obtainFromClientCredentials()
             .then((grant) =>{
                 this._grant = grant;
-                return true;
+                return grant;
             });
 
     }
@@ -57,7 +57,7 @@ class AuthzClient {
             .ensureFreshness(this._grant)
             .then((freshGrant) =>{
                 this._grant.update(freshGrant);
-                return true;
+                return freshGrant;
             })
             .catch(()=>{
 
@@ -69,7 +69,7 @@ class AuthzClient {
             .catch(exception =>{
 
                 console.error("Cannot refresh grant", exception);
-                this._grant = false;
+                this._grant = null;
 
                 throw exception;
 

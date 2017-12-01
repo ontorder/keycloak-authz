@@ -16,113 +16,108 @@ class HttpResource {
         return uri;
     }
 
-    post(uri, body, realm){
-        return this._client.refreshGrant().then(()=>{
-            const options = {
-                method: 'POST',
-                uri: this._prepareUri(uri, realm),
-                headers: {
-                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
-                },
-                body: body,
-                json: true
-            };
+    async post(uri, body, realm){
 
-            return new Promise((resolve, reject) =>{
-                request(options, (err, response, body ) => {
-                    if (err) {
-                        return reject(err);
-                    }
+        const grant = await this._client.refreshGrant();
 
-                    return resolve( { body, response } );
-                });
+        const options = {
+            method: 'POST',
+            uri: this._prepareUri(uri, realm),
+            headers: {
+                "Authorization": `Bearer ${grant.access_token.token}`
+            },
+            body: body,
+            json: true
+        };
+
+        return await new Promise((resolve, reject) =>{
+            request(options, (err, response, body ) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                return resolve( { body, response } );
             });
-
-
-        }).catch(response =>{
-            throw new Error(response.error);
         });
+
     }
 
-    put(uri, body, realm){
-        return this._client.refreshGrant().then(()=>{
-            const options = {
-                method: 'PUT',
-                uri: this._prepareUri(uri, realm),
-                headers: {
-                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
-                },
-                body: body,
-                json: true
-            };
+    async put(uri, body, realm){
 
-            return new Promise((resolve, reject) =>{
-                request(options, (err, response, body ) => {
-                    if (err) {
-                        return reject(err);
-                    }
+        const grant = await this._client.refreshGrant();
+        const options = {
+            method: 'PUT',
+            uri: this._prepareUri(uri, realm),
+            headers: {
+                "Authorization": `Bearer ${grant.access_token.token}`
+            },
+            body: body,
+            json: true
+        };
 
-                    return resolve( { body, response } );
-                });
+        return await new Promise((resolve, reject) =>{
+            request(options, (err, response, body ) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                return resolve( { body, response } );
             });
-
-        }).catch(response =>{
-            throw new Error(response.error);
         });
+
     }
 
-    get(uri, queryParams = {}, realm){
-        return this._client.refreshGrant().then(()=>{
-            const options = {
-                method: 'GET',
-                uri: this._prepareUri(uri, realm),
-                headers: {
-                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
-                },
-                qs: queryParams,
-                json: true
-            };
+    async get(uri, queryParams = {}, realm){
 
-            return new Promise((resolve, reject) =>{
-                request(options, (err, response, body ) => {
-                    if (err) {
-                        return reject(err);
-                    }
+        const grant = await this._client.refreshGrant();
 
-                    return resolve({ body, response });
-                });
+        const options = {
+            method: 'GET',
+            uri: this._prepareUri(uri, realm),
+            headers: {
+                "Authorization": `Bearer ${grant.access_token.token}`
+            },
+            qs: queryParams,
+            json: true
+        };
+
+        return await new Promise((resolve, reject) =>{
+            request(options, (err, response, body ) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                return resolve({ body, response });
             });
-
-        }).catch(response =>{
-            throw new Error(response.error.errorMessage);
         });
+
+
     }
 
-    delete(uri, body = {},  realm){
-        return this._client.refreshGrant().then(()=>{
-            let options = {
-                method: 'DELETE',
-                uri: this._prepareUri(uri, realm),
-                headers: {
-                    "Authorization": `Bearer ${this._client.grant.access_token.token}`
-                },
-                body,
-                json: true
-            };
+    async delete(uri, body = {},  realm){
 
-            return new Promise((resolve, reject) =>{
-                request(options, (err, response, body ) => {
-                    if (err) {
-                        return reject(err);
-                    }
+        const grant = await this._client.refreshGrant();
 
-                    return resolve( { body, response } );
-                });
+        const options = {
+            method: 'DELETE',
+            uri: this._prepareUri(uri, realm),
+            headers: {
+                "Authorization": `Bearer ${grant.access_token.token}`
+            },
+            body,
+            json: true
+        };
+
+        return await new Promise((resolve, reject) =>{
+            request(options, (err, response, body ) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                return resolve( { body, response } );
             });
-
-        }).catch(response =>{
-            throw new Error(response.error.errorMessage);
         });
+
     }
 }
 
