@@ -16,21 +16,19 @@ class HttpResource {
         return uri;
     }
 
-    async post(uri, body, realm){
-
-        const grant = await this._client.refreshGrant();
+    post(uri, body, realm){
 
         const options = {
             method: 'POST',
             uri: this._prepareUri(uri, realm),
             headers: {
-                "Authorization": `Bearer ${grant.access_token.token}`
+                "Authorization": 'Basic ' + new Buffer(this._client.clientId + ':' + this._client.credentials.secret).toString('base64'),
             },
             body: body,
             json: true
         };
 
-        return await new Promise((resolve, reject) =>{
+        return new Promise((resolve, reject) =>{
             request(options, (err, response, body ) => {
                 if (err) {
                     return reject(err);
@@ -42,20 +40,19 @@ class HttpResource {
 
     }
 
-    async put(uri, body, realm){
+    put(uri, body, realm){
 
-        const grant = await this._client.refreshGrant();
         const options = {
             method: 'PUT',
             uri: this._prepareUri(uri, realm),
             headers: {
-                "Authorization": `Bearer ${grant.access_token.token}`
+                "Authorization": 'Basic ' + new Buffer(this._client.clientId + ':' + this._client.credentials.secret).toString('base64'),
             },
             body: body,
             json: true
         };
 
-        return await new Promise((resolve, reject) =>{
+        return new Promise((resolve, reject) =>{
             request(options, (err, response, body ) => {
                 if (err) {
                     return reject(err);
@@ -67,21 +64,20 @@ class HttpResource {
 
     }
 
-    async get(uri, queryParams = {}, realm){
+    get(uri, queryParams = {}, realm){
 
-        const grant = await this._client.refreshGrant();
 
         const options = {
             method: 'GET',
             uri: this._prepareUri(uri, realm),
             headers: {
-                "Authorization": `Bearer ${grant.access_token.token}`
+                "Authorization": 'Basic ' + new Buffer(this._client.clientId + ':' + this._client.credentials.secret).toString('base64'),
             },
             qs: queryParams,
             json: true
         };
 
-        return await new Promise((resolve, reject) =>{
+        return  new Promise((resolve, reject) =>{
             request(options, (err, response, body ) => {
                 if (err) {
                     return reject(err);
@@ -94,21 +90,19 @@ class HttpResource {
 
     }
 
-    async delete(uri, body = {},  realm){
-
-        const grant = await this._client.refreshGrant();
+    delete(uri, body = {},  realm){
 
         const options = {
             method: 'DELETE',
             uri: this._prepareUri(uri, realm),
             headers: {
-                "Authorization": `Bearer ${grant.access_token.token}`
+                "Authorization": 'Basic ' + new Buffer(this._client.clientId + ':' + this._client.credentials.secret).toString('base64'),
             },
             body,
             json: true
         };
 
-        return await new Promise((resolve, reject) =>{
+        return  new Promise((resolve, reject) =>{
             request(options, (err, response, body ) => {
                 if (err) {
                     return reject(err);

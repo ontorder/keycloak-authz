@@ -31,34 +31,6 @@ class EntitlementResource extends HttpResource {
         return new Token(response.rpt, clientId);
     }
 
-    _getEvaluatingBaseUri(clientIdentifier){
-
-        return `clients/${clientIdentifier}/authz/resource-server/policy/evaluate`;
-
-    }
-
-
-    /** evaluate permissions via admin endpoint **/
-    evaluate(body = {}, clientIdentifier = this._client.clientInfo.id ){
-        let uri = `${this._client.url}/auth/admin/realms/${this._client.realm}/${this._getEvaluatingBaseUri(clientIdentifier)}`;
-        return this._client.refreshGrant().then((grant)=>{
-            let options = {
-                method: 'POST',
-                uri: uri,
-                headers: {
-                    "Authorization": `Bearer ${grant.access_token.token}`
-                },
-                body: body,
-                json: true
-            };
-            return request(options);
-
-        }).catch(response =>{
-
-            throw response.error;
-
-        });
-    }
 
     async getByPermissions(access_token, permissions, clientId = this._client.clientId){
 
@@ -89,24 +61,20 @@ class EntitlementResource extends HttpResource {
     }
 
     introspectRequestingPartyToken(rpt){
-        return this._client.refreshGrant().then(()=>{
-            let options = {
-                method: 'POST',
-                uri: `${this._client.url}/auth/realms/${this._client.realm}/protocol/openid-connect/token/introspect`,
-                headers: {
-                    "Authorization": 'Basic ' + new Buffer(this._client.clientId + ':' + this._client.credentials.secret).toString('base64'),
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                form: {
-                    "token_type_hint": "requesting_party_token",
-                    "token": rpt
-                },
-                json: true
-            };
-            return request(options);
-        }).catch(response =>{
-            throw new Error(response.error);
-        });
+        let options = {
+            method: 'POST',
+            uri: `${this._client.url}/auth/realms/${this._client.realm}/protocol/openid-connect/token/introspect`,
+            headers: {
+                "Authorization": 'Basic ' + new Buffer(this._client.clientId + ':' + this._client.credentials.secret).toString('base64'),
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            form: {
+                "token_type_hint": "requesting_party_token",
+                "token": rpt
+            },
+            json: true
+        };
+        return request(options);
     }
 
 }
