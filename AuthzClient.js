@@ -56,12 +56,13 @@ class AuthzClient {
         return this._grantManager
             .ensureFreshness(this._grant)
             .then((freshGrant) =>{
+                console.info("Grant updated: fresh, old === ", freshGrant, this._grant);
                 this._grant.update(freshGrant);
                 return freshGrant;
             })
-            .catch(()=>{
+            .catch((e)=>{
 
-                console.warn("Cannot refresh grant, re-auth");
+                console.warn("Cannot refresh grant, re-auth", e);
                 this._grant = null;
                 return this.authenticate();
 
