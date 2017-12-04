@@ -28,6 +28,7 @@ class UsersResource extends HttpResource {
 
     async create( user, realm = this._client.realm ){
 
+
         const { response } = await this.post('/users', user, realm);
 
         const uid = response.headers.location.replace(/.*\/(.*)$/, '$1');

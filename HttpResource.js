@@ -33,6 +33,7 @@ class HttpResource {
         return await new Promise((resolve, reject) =>{
             request(options, (err, response, body ) => {
                 if (err) {
+                    console.error(err);
                     return reject(err);
                 }
 
@@ -58,6 +59,7 @@ class HttpResource {
         return await new Promise((resolve, reject) =>{
             request(options, (err, response, body ) => {
                 if (err) {
+                    console.error(err);
                     return reject(err);
                 }
 
@@ -84,6 +86,7 @@ class HttpResource {
         return await new Promise((resolve, reject) =>{
             request(options, (err, response, body ) => {
                 if (err) {
+                    console.error(err);
                     return reject(err);
                 }
 
