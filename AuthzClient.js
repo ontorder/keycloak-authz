@@ -57,7 +57,7 @@ class AuthzClient {
             .ensureFreshness(this._grant)
             .then((freshGrant) =>{
                 console.info("Grant updated: fresh, old === ", freshGrant, this._grant);
-                this._grant.update(freshGrant);
+                this._grant = freshGrant;
                 return freshGrant;
             })
             .catch((e)=>{
