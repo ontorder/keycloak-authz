@@ -52,28 +52,17 @@ class AuthzClient {
 
     }
 
-    refreshGrant(){
-        return this._grantManager
-            .ensureFreshness(this._grant)
-            .then((freshGrant) =>{
-                this._grant = freshGrant;
-                return freshGrant;
-            })
-            .catch((e)=>{
+    async refreshGrant(){
 
-                console.warn("Cannot refresh grant, re-auth", e);
-                this._grant = null;
-                return this.authenticate();
+        if(!this._grant || this._grant.access_token.isExpired(60000)){
 
-            })
-            .catch(exception =>{
+            console.log("Token is expired");
 
-                console.error("Cannot refresh grant", exception);
-                this._grant = null;
+            await this.authenticate();
+        }
 
-                throw exception;
+        return this._grant;
 
-            });
     }
 
     get resource(){
