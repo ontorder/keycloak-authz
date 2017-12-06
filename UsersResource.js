@@ -81,6 +81,15 @@ class UsersResource extends HttpResource {
     }
 
 
+    async resetPassword(userId, newCredentials = {}, realm = this._client.realm){
+
+        const { body } = await this.put(`/users/${userId}/reset-password`, newCredentials, realm );
+
+        return body;
+
+    }
+
+
 }
 
 module.exports = UsersResource;
