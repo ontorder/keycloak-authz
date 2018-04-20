@@ -80,6 +80,14 @@ class UsersResource extends HttpResource {
 
     }
 
+    async deleteIdentityProvider ( userId, providerName, realm = this._client.realm  ){
+
+        const { body } = await this.delete(`/users/${userId}/federated-identity/${providerName}`, {}, realm );
+
+        return body;
+
+    }
+
 
     async resetPassword (userId, newCredentials = {}, realm = this._client.realm){
 
