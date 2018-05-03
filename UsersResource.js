@@ -88,7 +88,7 @@ class UsersResource extends HttpResource {
 
     }
 
-    async executeActionsEmail ( { userId, actions, clientId, redirectUri, lifespan = 54000000 },   realm = this._client.realm){
+    async executeActionsEmail ( { userId, actions, clientId, redirectUri, lifespan = 300 },   realm = this._client.realm){
 
         const { body } = await this.put(`/users/${userId}/execute-actions-email?client_id=${clientId}&lifespan=${lifespan}&redirect_uri=${redirectUri}`, actions,  realm );
 
