@@ -18,19 +18,19 @@ class UsersResource extends HttpResource {
         return body;
     }
 
-    async count( realm = this._client.realm ){
-
-        const usersCount = await this.get(`/users/count`, realm );
-
-        return usersCount;
-    }
-
     async findById( userId, realm = this._client.realm ){
 
         const {body} = await this.get(`/users/${userId}`, realm);
 
         return body;
 
+    }
+
+    async count( realm = this._client.realm ){
+
+        const usersCount = await this.get(`/users/count`, realm );
+
+        return usersCount;
     }
 
     async create( user, realm = this._client.realm ){
