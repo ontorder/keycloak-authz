@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "dotenv": "4.0.0",
-    "keycloak-auth-utils": "webintoit/keycloak-nodejs-auth-utils",
+    "keycloak-auth-utils": "keycloak/keycloak-nodejs-auth-utils#7a2cc9ece1ad008ffc97a31857c7c0a195392fb3",
     "request": "2.83.0",
     "request-promise-native": "1.0.5"
   }

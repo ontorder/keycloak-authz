@@ -1,117 +1,107 @@
 const HttpResource = require('./HttpResource');
 
 class UsersResource extends HttpResource {
+  constructor(authzClient) {
+    super(authzClient, true);
+  }
 
-    constructor(authzClient){
+  async find(options = {}, realm = this._client.realm) {
+    if (options.userId) return await this.findById(options.userId, realm);
 
-        super(authzClient, true);
+    const { body } = await this.get(`/users`, options, realm);
 
+    return body;
+  }
 
-    }
+  async findById(userId, realm = this._client.realm) {
+    const { body } = await this.get(`/users/${userId}`, realm);
 
-    async find( options = {}, realm = this._client.realm ){
+    return body;
+  }
 
-        if(options.userId) return await this.findById(options.userId, realm);
+  async count(realm = this._client.realm) {
+    const usersCount = await this.get(`/users/count`, realm);
 
-        const {body} = await this.get(`/users`, options, realm );
+    return usersCount;
+  }
 
-        return body;
-    }
+  async create(user, realm = this._client.realm) {
+    const { response } = await this.post('/users', user, realm);
 
-    async findById( userId, realm = this._client.realm ){
+    const uid = response.headers.location.replace(/.*\/(.*)$/, '$1');
 
-        const {body} = await this.get(`/users/${userId}`, realm);
+    return await this.findById(uid, realm);
+  }
 
-        return body;
+  async update(user, realm = this._client.realm) {
+    const { body } = await this.put(`/users/${user.id}`, user, realm);
 
-    }
+    return body;
+  }
 
-    async count( realm = this._client.realm ){
+  async getRoleMappings(userId, realm = this._client.realm) {
+    const { body } = await this.get(`/users/${userId}/role-mappings`, {}, realm);
 
-        const usersCount = await this.get(`/users/count`, realm );
+    return body;
+  }
 
-        return usersCount;
-    }
+  async addRealmRoles(userId, roles, realm = this._client.realm) {
+    const { body } = await this.post(`/users/${userId}/role-mappings/realm`, roles, realm);
 
-    async create( user, realm = this._client.realm ){
+    return body;
+  }
 
+  async removeRealmRoles(userId, roles, realm = this._client.realm) {
+    const { body } = await this.delete(`/users/${userId}/role-mappings/realm`, roles, realm);
 
-        const { response } = await this.post('/users', user, realm);
+    return body;
+  }
 
-        const uid = response.headers.location.replace(/.*\/(.*)$/, '$1');
+  async getInviteToken(
+    { userId, clientId, redirectUri, lifespan = 7200 },
+    realm = this._client.realm
+  ) {
+    const { body } = await this.get(
+      `/users/${userId}/invite_token`,
+      {
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        lifespan
+      },
+      realm
+    );
 
-        return await this.findById(uid, realm);
+    return body;
+  }
 
-    }
+  async deleteIdentityProvider(userId, providerName, realm = this._client.realm) {
+    const { body } = await this.delete(
+      `/users/${userId}/federated-identity/${providerName}`,
+      {},
+      realm
+    );
 
+    return body;
+  }
 
-    async update( user, realm = this._client.realm ){
+  async executeActionsEmail(
+    { userId, actions, clientId, redirectUri, lifespan = 300 },
+    realm = this._client.realm
+  ) {
+    const { body } = await this.put(
+      `/users/${userId}/execute-actions-email?client_id=${clientId}&lifespan=${lifespan}&redirect_uri=${redirectUri}`,
+      actions,
+      realm
+    );
 
-        const { body } = await this.put(`/users/${user.id}`, user, realm);
+    return body;
+  }
 
-        return body;
+  async resetPassword(userId, newCredentials = {}, realm = this._client.realm) {
+    const { body } = await this.put(`/users/${userId}/reset-password`, newCredentials, realm);
 
-    }
-
-    async getRoleMappings(userId, realm = this._client.realm ){
-
-        const { body } = await this.get(`/users/${userId}/role-mappings`, {}, realm );
-
-        return body;
-    }
-
-    async addRealmRoles( userId, roles,  realm = this._client.realm ) {
-
-        const { body } = await this.post(`/users/${userId}/role-mappings/realm`, roles, realm );
-
-        return body;
-    }
-
-    async removeRealmRoles( userId, roles,  realm = this._client.realm ) {
-
-        const { body } = await this.delete(`/users/${userId}/role-mappings/realm`, roles, realm );
-
-        return body;
-    }
-
-    async getInviteToken ( { userId, clientId, redirectUri, lifespan = 7200 } , realm = this._client.realm  ){
-
-        const { body } = await this.get(`/users/${userId}/invite_token`, {
-            client_id: clientId,
-            redirect_uri: redirectUri,
-            lifespan
-        }, realm );
-
-
-        return body;
-
-    }
-
-    async deleteIdentityProvider ( userId, providerName, realm = this._client.realm  ){
-
-        const { body } = await this.delete(`/users/${userId}/federated-identity/${providerName}`, {}, realm );
-
-        return body;
-
-    }
-
-    async executeActionsEmail ( { userId, actions, clientId, redirectUri, lifespan = 300 },   realm = this._client.realm){
-
-        const { body } = await this.put(`/users/${userId}/execute-actions-email?client_id=${clientId}&lifespan=${lifespan}&redirect_uri=${redirectUri}`, actions,  realm );
-
-        return body;
-
-    }
-
-    async resetPassword (userId, newCredentials = {}, realm = this._client.realm){
-
-        const { body } = await this.put(`/users/${userId}/reset-password`, newCredentials, realm );
-
-        return body;
-
-    }
-
-
+    return body;
+  }
 }
 
 module.exports = UsersResource;

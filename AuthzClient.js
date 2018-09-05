@@ -1,118 +1,106 @@
 const GrantManager = require('keycloak-auth-utils').GrantManager,
-      KcConfig = require('keycloak-auth-utils').Config,
-      ProtectedResource = require('./ProtectedResource'),
-      AdminResource = require('./AdminResource'),
-      EntitlementResource = require('./EntitlementResource');
+  KcConfig = require('keycloak-auth-utils').Config,
+  ProtectedResource = require('./ProtectedResource'),
+  AdminResource = require('./AdminResource'),
+  EntitlementResource = require('./EntitlementResource');
 
 class AuthzClient {
+  constructor({ url, realm, clientId, credentials = {}, publicClient = false }) {
+    if (!url) throw new Error('Required param is missing: url');
+    if (!realm) throw new Error('Required param is missing: realm');
+    if (!clientId) throw new Error('Required param is missing: clientId');
 
-    constructor({url, realm, clientId, credentials = {}, publicClient = false }){
+    this._kcUrl = url;
+    this._realm = realm;
+    this._clientId = clientId;
+    this._credentials = credentials;
+    this._public = publicClient;
+    this._grant = null;
+    this._grantManager = null;
+    this._protectedResource = null;
+    this._entitlementResource = null;
+    this._adminResource = null;
+  }
 
-        if(!url) throw new Error("Required param is missing: url");
-        if(!realm) throw new Error("Required param is missing: realm");
-        if(!clientId) throw new Error("Required param is missing: clientId");
+  isAuthenticated() {
+    return !!this._grant;
+  }
 
-        this._kcUrl = url;
-        this._realm = realm;
-        this._clientId = clientId;
-        this._credentials = credentials;
-        this._public = publicClient;
+  authenticate() {
+    if (this.isAuthenticated() && !this._grant.isExpired()) return Promise.resolve(true);
+
+    const config = new KcConfig({
+      realm: this._realm,
+      clientId: this._clientId,
+      secret: this._credentials.secret,
+      serverUrl: this._kcUrl + '/auth',
+      public: this._public
+    });
+
+    this._grantManager = this._grantManager || new GrantManager(config);
+
+    return this._grantManager.obtainFromClientCredentials().then(grant => {
+      this._grant = grant;
+      return grant;
+    });
+  }
+
+  refreshGrant() {
+    return this._grantManager
+      .ensureFreshness(this._grant)
+      .then(freshGrant => {
+        this._grant = freshGrant;
+        return freshGrant;
+      })
+      .catch(exception => {
         this._grant = null;
-        this._grantManager = null;
-        this._protectedResource = null;
-        this._entitlementResource = null;
-        this._adminResource = null;
 
-    }
+        throw exception;
+      });
+  }
 
-    isAuthenticated(){
-        return !!(this._grant);
-    }
+  get resource() {
+    this._protectedResource = this._protectedResource || new ProtectedResource(this);
+    return this._protectedResource;
+  }
 
-    authenticate(){
+  get entitlement() {
+    this._entitlementResource = this._entitlementResource || new EntitlementResource(this);
+    return this._entitlementResource;
+  }
 
-        if(this.isAuthenticated() && !this._grant.isExpired()) return Promise.resolve(true);
+  get admin() {
+    this._adminResource = this._adminResource || new AdminResource(this);
+    return this._adminResource;
+  }
 
-        const config = new KcConfig({
-            realm: this._realm,
-            clientId: this._clientId,
-            secret: this._credentials.secret,
-            serverUrl: this._kcUrl + "/auth",
-            public: this._public
-        });
+  get grant() {
+    return this._grant;
+  }
 
-        this._grantManager = this._grantManager || new GrantManager(config);
+  get url() {
+    return this._kcUrl;
+  }
 
-        return this._grantManager
-            .obtainFromClientCredentials()
-            .then((grant) =>{
-                this._grant = grant;
-                return grant;
-            });
+  get clientId() {
+    return this._clientId;
+  }
 
-    }
+  get realm() {
+    return this._realm;
+  }
 
-    refreshGrant(){
-        return this._grantManager
-            .ensureFreshness(this._grant)
-            .then((freshGrant) =>{
+  get grantManager() {
+    return this._grantManager;
+  }
 
-                this._grant = freshGrant;
-                return freshGrant;
-            })
-            .catch(exception =>{
+  get credentials() {
+    return this._credentials;
+  }
 
-                console.error("Cannot refresh grant", exception);
-                this._grant = null;
-
-                throw exception;
-
-            });
-    }
-
-    get resource(){
-        this._protectedResource  =  this._protectedResource || new ProtectedResource(this);
-        return this._protectedResource;
-    }
-
-    get entitlement(){
-        this._entitlementResource = this._entitlementResource || new EntitlementResource(this);
-        return this._entitlementResource;
-    }
-
-    get admin(){
-        this._adminResource = this._adminResource || new AdminResource(this);
-        return this._adminResource;
-    }
-
-    get grant(){
-
-        return this._grant;
-    }
-
-    get url(){
-        return this._kcUrl;
-    }
-
-    get clientId(){
-        return this._clientId;
-    }
-
-    get realm(){
-       return this._realm;
-    }
-
-    get grantManager(){
-        return this._grantManager;
-    }
-
-    get credentials(){
-        return this._credentials;
-    }
-
-    get clientInfo(){
-        return {};
-    }
+  get clientInfo() {
+    return {};
+  }
 }
 
 module.exports = AuthzClient;
