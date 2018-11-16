@@ -34,7 +34,7 @@ const { UMAResource, AuthzClient  } = require('keycloak-authz');
         .setType("photoz")
         .setUri("/photoz/item/133");
 
-   await  client.authenticate();
+   await client.authenticate();
    
    await client.resource.create(resource);
 
